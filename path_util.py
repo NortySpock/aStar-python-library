@@ -2,7 +2,7 @@ from math import fabs as abs
 
 
 
-def m_distance(x1, y1, x2, y2):
+def manhattan_distance(x1, y1, x2, y2):
     return (abs(x1-x2) + abs(y1-y2))
 
 def pretty_print_map(self, double_list):
@@ -107,7 +107,7 @@ def a_star_path(self, from_x,from_y,to_x,to_y, unit_number):
     unit_tups = zip([i.x for i in self.units[0:]], [i.y for i in self.units[0:]])
     
     def _g(self, i):
-      return self.m_distance(i[0], i[1], from_x, from_y)
+      return self.manhattan_distance(i[0], i[1], from_x, from_y)
     
     def _h(self, i, unit_tups):
       difficulty = 1
@@ -117,7 +117,7 @@ def a_star_path(self, from_x,from_y,to_x,to_y, unit_number):
           break
       if self.tiles[self.getTileIndex(i)].depth < 0 and self.tiles[self.getTileIndex(i)].waterAmount > 0:
         difficulty = 6
-      return self.m_distance(i[0], i[1], to_x, to_y) * difficulty
+      return self.manhattan_distance(i[0], i[1], to_x, to_y) * difficulty
       
     def _makePath(self, childTup, endTup, failsafe):
       failsafe += 1
