@@ -80,3 +80,6 @@ visualizer/botnet/Makefile
 
 #Dont ignore jna.jar
 !jna.jar
+
+#bundles don't go in the repository
+*.bundle
