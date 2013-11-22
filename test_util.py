@@ -1,4 +1,4 @@
-import random
+from random import randrange
 
 def pretty_print_map(double_list):
   numcols = len(double_list)    
@@ -47,7 +47,7 @@ def make_me_a_world_list_of_threetuples():
   return world_list
     
 def make_grid(x,y,init=None):
-  return [[init]*x]*y
+  return [[init]*y]*x
 
 def create_text_map_from_cost_map(cost_map):
   max_x = len(cost_map)
@@ -65,6 +65,8 @@ def create_text_map_from_cost_map(cost_map):
 def generate_random_cost_map(cost_map,min_cost, max_cost):
   max_x = len(cost_map)
   max_y = len(cost_map[0])
+  iter = 0
   for i in xrange(max_y):
     for j in xrange(max_x):
-      cost_map[j][i] = randrange(min_cost,max_cost) #normal to 3 cost
+      iter += 1
+      cost_map[j][i] = iter #normal to 3 cost
