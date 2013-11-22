@@ -42,3 +42,7 @@ def make_me_a_world_list_of_threetuples(self):
       world_list.append((tile.x,tile.y,"U"))
       
     return world_list
+    
+def make_grid(x,y,init=None):
+     return [[init]*x]*y
+
