@@ -30,23 +30,6 @@ def populate_grid(grid,list_of_three_tuples):
         grid[point[0]][point[1]] = point[2] # put in value at position (x, y, value)
   
 
-def make_me_a_world_list_of_threetuples():
-  world_list = []
-  for tile in self.tiles:
-    if tile.isSpawning:
-      world_list.append((tile.x,tile.y,"S"))
-    if tile.pumpID != -1:
-      world_list.append((tile.x,tile.y,"P"))
-    if tile.waterAmount == 1:
-      world_list.append((tile.x,tile.y,"w"))
-    if tile.waterAmount > 1:
-      world_list.append((tile.x,tile.y,"W"))
-    if tile.waterAmount <= 0 and tile.depth > 0:
-      world_list.append((tile.x,tile.y,"t"))
-  for u in self.units:
-    world_list.append((tile.x,tile.y,"U"))
-    
-  return world_list
     
 def make_grid(x,y,init=None):
   return [[init]*y]*x
