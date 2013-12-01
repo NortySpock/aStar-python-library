@@ -49,6 +49,14 @@ def create_text_map_from_cost_map(cost_map):
         
   return text_map
 
+def replace_in_map(map_in, from_var,to_var):
+  max_x = len(map_in)
+  max_y = len(map_in[0])
+  for i in xrange(max_y):
+    for j in xrange(max_x):
+      if map_in[j][i] == from_var:
+	map_in[j][i] = to_var
+
 def generate_random_cost_map(cost_map,min_cost, max_cost):
   max_x = len(cost_map)
   max_y = len(cost_map[0])
