@@ -67,6 +67,15 @@ def generate_random_cost_map(cost_map,min_cost, max_cost):
       thing += 1
       cost_map[x][y] = randrange(min_cost,max_cost+1)
       
+def generate_random_pos(max_x,max_y):
+  return (randrange(0,max_x+1),randrange(0,max_y+1))
   
-
+def print_path_on_map(map_in, path_in)
+  absolute_iterations = 0
+  for path_pos in path_in:
+    absolute_iterations += 1
+    mod_iter = (absolute_iterations % 26) - 1
+    number = ord('a') + mod_iter
+    map_in[path_pos[0]][path_pos[1]] = chr(number)
+    
 
