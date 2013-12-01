@@ -1,6 +1,6 @@
 from random import randrange
 from copy import deepcopy
-from itertools import product
+
 
 def pretty_print_map(double_list):
   numcols = len(double_list)    
@@ -49,7 +49,7 @@ def make_me_a_world_list_of_threetuples():
   return world_list
     
 def make_grid(x,y,init=None):
-  return [[init]*y]*x
+  return [[init]*y for i in xrange(x)]
 
 def create_text_map_from_cost_map(cost_map):
   max_x = len(cost_map)
@@ -65,25 +65,15 @@ def create_text_map_from_cost_map(cost_map):
         text_map[j][i] = cost_map[j][i] #just store the number
 
 def generate_random_cost_map(cost_map,min_cost, max_cost):
-  print ("in generate_random_cost_map")
   max_x = len(cost_map)
   max_y = len(cost_map[0])
   thing = 0
-  xthing = range(max_x)
-  print (xthing)
-  ything = range(max_y)
-  print (ything)
-  coord_list = [range(max_x),range(max_y)]
-  print (coord_list)
-  my_iterator = product(*coord_list)
-  print(my_iterator)
-
-  for coord in product(*coord_list):
-    thing += 1
-    print("thing =",thing)
-    print cost_map
-    cost_map[coord[0]][coord[1]] = thing
-    print cost_map
+  
+  for y in xrange(max_y):
+    for x in xrange(max_x):    
+      thing += 1
+      cost_map[x][y] = randrange(min_cost,max_cost+1)
+      
   
 
 
