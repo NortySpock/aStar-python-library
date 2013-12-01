@@ -45,7 +45,9 @@ def create_text_map_from_cost_map(cost_map):
       elif cost_map[j][i] == 1: #normal cost
         text_map[j][i] = ' '
       else:
-        text_map[j][i] = cost_map[j][i] #just store the number
+        text_map[j][i] = str(cost_map[j][i])[0] #just store the number
+        
+  return text_map
 
 def generate_random_cost_map(cost_map,min_cost, max_cost):
   max_x = len(cost_map)
