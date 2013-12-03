@@ -5,9 +5,7 @@ def manhattan_distance(x1, y1, x2, y2):
 
 # returns a list of xy tuples that are a path from here to there  
 #this does not take into account obstacles
-def my_dumb_path(self, from_x,from_y,to_x,to_y):
-    if self.debug:
-        print("inside my_dumb_path")
+def my_dumb_path(from_x,from_y,to_x,to_y):
         
     the_path = []
     from_pos = [from_x, from_y]
@@ -26,27 +24,20 @@ def my_dumb_path(self, from_x,from_y,to_x,to_y):
       
       if(rise_delta > run_delta): #move vertically
       #(0,0) is top left, (40,20) is bottom right
-        if self.debug:
-          print("rising delta = %s"% rise_delta)
         if (curr_pos[1] < to_pos[1]): #above target, move down
           curr_pos[1] = curr_pos[1] + 1
         else: #below target, move up
           curr_pos[1] = curr_pos[1] - 1
       else: #move horizontally
-        if self.debug:
-          print("running delta = %s"% run_delta)
         if(curr_pos[0] < to_pos[0]): # left of target, move right
           curr_pos[0]  = curr_pos[0] + 1
         else: # right of target, move left
           curr_pos[0] = curr_pos[0] - 1
-      if self.debug:
-        print("curr_pos = %s"% curr_pos)
       the_path.append((curr_pos[0], curr_pos[1]))
       
       if curr_pos == to_pos:
         done = True
       
-    #finally append the to_pos, because that was not done
     return the_path
 
 def a_star_path(self, from_x,from_y,to_x,to_y, unit_number):

@@ -73,9 +73,9 @@ def generate_random_pos(max_x,max_y):
 def print_path_on_map(map_in, path_in):
   absolute_iterations = 0
   for path_pos in path_in:
-    absolute_iterations += 1
-    mod_iter = (absolute_iterations % 26) - 1
+    mod_iter = (absolute_iterations % 26)
     number = ord('a') + mod_iter
     map_in[path_pos[0]][path_pos[1]] = chr(number)
+    absolute_iterations += 1
     
 
