@@ -70,7 +70,7 @@ def generate_random_cost_map(cost_map,min_cost, max_cost):
 def generate_random_pos(max_x,max_y):
   return (randrange(0,max_x+1),randrange(0,max_y+1))
   
-def print_path_on_map(map_in, path_in)
+def print_path_on_map(map_in, path_in):
   absolute_iterations = 0
   for path_pos in path_in:
     absolute_iterations += 1
