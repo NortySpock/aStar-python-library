@@ -41,7 +41,7 @@ def create_text_map_from_cost_map(cost_map):
   for i in xrange(max_y):
     for j in xrange(max_x):
       if cost_map[j][i] == -1: #impassable
-        text_map[j][i] = 'X'
+        text_map[j][i] = '#'
       elif cost_map[j][i] == 1: #normal cost
         text_map[j][i] = ' '
       else:
@@ -68,7 +68,7 @@ def generate_random_cost_map(cost_map,min_cost, max_cost):
       cost_map[x][y] = randrange(min_cost,max_cost+1)
       
 def generate_random_pos(max_x,max_y):
-  return (randrange(0,max_x+1),randrange(0,max_y+1))
+  return (randrange(0,max_x),randrange(0,max_y))
   
 def print_path_on_map(map_in, path_in):
   absolute_iterations = 0
@@ -77,5 +77,18 @@ def print_path_on_map(map_in, path_in):
     number = ord('a') + mod_iter
     map_in[path_pos[0]][path_pos[1]] = chr(number)
     absolute_iterations += 1
-    
+
+def check_path_for_validity(path, cost_map):
+  for point in path:
+    if not is_valid_move(point[0],point[1],cost_map):
+      print "Violation! Move to ("+str(point[0])+","+str(point[1])+") is not valid!"
+
+def is_valid_move(x,y,cost_map):
+  max_x = len(cost_map)
+  max_y = len(cost_map[0])
+  if(0 <= x < max_x and 0 <= y < max_y and cost_map[x][y] != -1):
+    return True
+  else:
+    return False
+
 
