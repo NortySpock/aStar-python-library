@@ -6,18 +6,30 @@ def pretty_print_map(double_list):
   numcols = len(double_list)    
   colposes = len(double_list[0])
   my_row = ''
-  
+  counter = 0
+  ones_row = ' '
+  tens_row = ' '
   header = "+"
   for i in xrange(numcols):
+    ones_row = ones_row + str(counter % 10)
+    if(counter % 10 == 0):
+      tens_row = tens_row + str(counter / 10)
+    else:
+      tens_row = tens_row + ' '
+    counter = (counter + 1)
     header = header + "-"
   header = header + "+"
-  
+
+  print(tens_row)  
+  print(ones_row)
   print(header)
+  counter = 0
   for i in xrange(colposes):
     my_row = "|"
     for j in xrange(numcols):
       my_row = my_row + str(double_list[j][i])[0] #just one character, please!
-    my_row = my_row + "|"
+    my_row = my_row + "|" + str(counter)
+    counter = (counter + 1) 
     print(my_row)
   print(header)
 
