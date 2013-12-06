@@ -1,2 +1,2 @@
-write some safety code for random detour path so it bails out when a path is probably impassable or looping
+Fix random_detour to make it not jump over walls.
 fiddle with A*
