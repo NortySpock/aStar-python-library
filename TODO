@@ -1,2 +1,2 @@
-add a walk-right path
+write some safety code for random detour path so it bails out when a path is probably impassable or looping
 fiddle with A*

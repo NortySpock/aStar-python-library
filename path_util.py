@@ -1,4 +1,6 @@
 from math import fabs as abs
+from random import randrange
+from test_util import is_valid_move
 
 def manhattan_distance(x1, y1, x2, y2):
     return (abs(x1-x2) + abs(y1-y2))
@@ -39,6 +41,64 @@ def my_dumb_path(from_x,from_y,to_x,to_y):
         done = True
       
     return the_path
+  
+def detour_random_path(from_x,from_y,to_x,to_y, cost_map):
+    the_path = []
+    from_pos = [from_x, from_y]
+    to_pos = [to_x,to_y]
+    curr_pos = from_pos
+    move_pos = from_pos
+    done = False
+    random_move_counter = 0
+    max_random_moves = 10
+    
+    #idiot check
+    if curr_pos == to_pos:
+      done = True
+    
+    while not done:
+      #calculate rise over run delta:
+      run_delta = abs(curr_pos[0] - to_pos[0])
+      rise_delta = abs(curr_pos[1] - to_pos[1])
+      move_pos = curr_pos #default to no move.
+      
+      if(rise_delta > run_delta): #move vertically
+      #(0,0) is top left, (40,20) is bottom right
+        if (curr_pos[1] < to_pos[1]): #above target, move down
+          move_pos[1] = curr_pos[1] + 1
+        else: #below target, move up
+          move_pos[1] = curr_pos[1] - 1
+      else: #move horizontally
+        if(curr_pos[0] < to_pos[0]): # left of target, move right
+          move_pos[0]  = curr_pos[0] + 1
+        else: # right of target, move left
+          move_pos[0] = curr_pos[0] - 1
+          
+      while not is_valid_move(move_pos[0], move_pos[1], cost_map) and not done:
+	random_move_counter += 1
+        print("Suggested move found invalid, moving randomly for the "+str(random_move_counter)+"th time.")
+        move_pos = curr_pos #default to no move.
+        if random_move_counter > max_random_moves:
+	  print("Exceeded maximum number of random moves, aborting.")
+	  done = True
+	else:
+	  direction = randrange(0,4)
+	  if direction == 0: #north
+	    move_pos[1] = curr_pos[1] - 1
+	  elif direction == 1: #east
+	    move_pos[0]  = curr_pos[0] + 1
+	  elif direction == 2: #south
+	    move_pos[1] = curr_pos[1] + 1
+	  elif direction == 3: #west
+	    move_pos[0] = curr_pos[0] - 1
+        
+      the_path.append((move_pos[0], move_pos[1]))
+      curr_pos = move_pos #update curr_pos
+      if curr_pos == to_pos:
+        done = True
+      
+    return the_path
+      
 
 def a_star_path(self, from_x,from_y,to_x,to_y, unit_number):
     if self.a_star_debug:
