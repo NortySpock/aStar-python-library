@@ -20,5 +20,5 @@ pretty_print_map(my_text_map) #show board before we tamper with it
 the_path = detour_random_path(start_pos[0],start_pos[1],end_pos[0],end_pos[1],my_cost_map)
 print_path_on_map(my_text_map,the_path)
 pretty_print_map(my_text_map)
-check_path_for_validity(the_path, my_cost_map)
+check_path_for_validity(start_pos[0],start_pos[1],end_pos[0],end_pos[1],the_path, my_cost_map)
 

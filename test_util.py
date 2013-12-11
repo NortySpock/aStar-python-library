@@ -90,10 +90,25 @@ def print_path_on_map(map_in, path_in):
     map_in[path_pos[0]][path_pos[1]] = chr(number)
     absolute_iterations += 1
 
-def check_path_for_validity(path, cost_map):
+def is_manhattan_adjacent(p1_x,p1_y, p2_x,p2_y):
+  if(   (abs(p1_x - p2_x) == 1 and abs(p1_y - p2_y) == 0)
+     or (abs(p1_x - p2_x) == 0 and abs(p1_y - p2_y) == 1)):
+       return True
+  else:
+    return False
+
+def check_path_for_validity(from_x,from_y,to_x,to_y, path, cost_map):
+  prev = [from_x,from_y]
+  
   for point in path:
     if not is_valid_move(point[0],point[1],cost_map):
-      print "Violation! Move to ("+str(point[0])+","+str(point[1])+") is not valid!"
+      print "Move to ("+str(point[0])+","+str(point[1])+") is not valid!"
+    if not is_manhattan_adjacent(prev[0],prev[1],point[0],point[1]):
+      print "Prev pos ("+str(prev[0])+","+str(prev[1])+")"+" and curr pos ("+str(point[0])+","+str(point[1])+") are not adjacent!"
+    prev = point
+  last = path[-1]
+  if last != (to_x,to_y):
+    print "Final pos ("+str(last[0])+","+str(last[1])+")"+" is not the target at("+str(to_x)+","+str(to_y)+")!"
 
 def is_valid_move(x,y,cost_map):
   max_x = len(cost_map)
@@ -102,5 +117,4 @@ def is_valid_move(x,y,cost_map):
     return True
   else:
     return False
-
 

@@ -1,4 +1,3 @@
-from math import fabs as abs
 from random import randrange
 from test_util import is_valid_move
 
@@ -77,6 +76,7 @@ def detour_random_path(from_x,from_y,to_x,to_y, cost_map):
       while not is_valid_move(move_pos[0], move_pos[1], cost_map) and not done:
 	random_move_counter += 1
         print("Suggested move found invalid, moving randomly for the "+str(random_move_counter)+"th time.")
+        print("curr_pos ("+str(curr_pos[0])+","+str(curr_pos[1])+") move_pos ("+str(move_pos[0])+","+str(move_pos[1])+")")
         move_pos = curr_pos #default to no move.
         if random_move_counter > max_random_moves:
 	  print("Exceeded maximum number of random moves, aborting.")
@@ -84,13 +84,14 @@ def detour_random_path(from_x,from_y,to_x,to_y, cost_map):
 	else:
 	  direction = randrange(0,4)
 	  if direction == 0: #north
-	    move_pos[1] = curr_pos[1] - 1
+	    move_pos[1] -= 1
 	  elif direction == 1: #east
-	    move_pos[0]  = curr_pos[0] + 1
+	    move_pos[0]+= 1
 	  elif direction == 2: #south
-	    move_pos[1] = curr_pos[1] + 1
+	    move_pos[1] += 1
 	  elif direction == 3: #west
-	    move_pos[0] = curr_pos[0] - 1
+	    move_pos[0] -= 1
+	print("New move_pos ("+str(move_pos[0])+","+str(move_pos[1])+")")
         
       the_path.append((move_pos[0], move_pos[1]))
       curr_pos = move_pos #update curr_pos
