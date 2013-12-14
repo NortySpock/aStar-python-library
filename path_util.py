@@ -1,5 +1,6 @@
 from random import randrange
 from test_util import is_valid_move
+from copy import deepcopy
 
 def manhattan_distance(x1, y1, x2, y2):
     return (abs(x1-x2) + abs(y1-y2))
@@ -45,8 +46,8 @@ def detour_random_path(from_x,from_y,to_x,to_y, cost_map):
     the_path = []
     from_pos = [from_x, from_y]
     to_pos = [to_x,to_y]
-    curr_pos = from_pos
-    move_pos = from_pos
+    curr_pos = deepcopy(from_pos)
+    move_pos = deepcopy(from_pos)
     done = False
     random_move_counter = 0
     max_random_moves = 10
@@ -59,8 +60,8 @@ def detour_random_path(from_x,from_y,to_x,to_y, cost_map):
       #calculate rise over run delta:
       run_delta = abs(curr_pos[0] - to_pos[0])
       rise_delta = abs(curr_pos[1] - to_pos[1])
-      move_pos = curr_pos #default to no move.
-      
+      move_pos = deepcopy(curr_pos) #default to no move.
+            
       if(rise_delta > run_delta): #move vertically
       #(0,0) is top left, (40,20) is bottom right
         if (curr_pos[1] < to_pos[1]): #above target, move down
@@ -72,12 +73,11 @@ def detour_random_path(from_x,from_y,to_x,to_y, cost_map):
           move_pos[0]  = curr_pos[0] + 1
         else: # right of target, move left
           move_pos[0] = curr_pos[0] - 1
-          
+      
       while not is_valid_move(move_pos[0], move_pos[1], cost_map) and not done:
 	random_move_counter += 1
-        print("Suggested move found invalid, moving randomly for the "+str(random_move_counter)+"th time.")
-        print("curr_pos ("+str(curr_pos[0])+","+str(curr_pos[1])+") move_pos ("+str(move_pos[0])+","+str(move_pos[1])+")")
-        move_pos = curr_pos #default to no move.
+        print("Suggested move ("+str(move_pos[0])+","+str(move_pos[1])+") found invalid, moving randomly for the "+str(random_move_counter)+"th time.")
+        move_pos = deepcopy(curr_pos) #default to no move.
         if random_move_counter > max_random_moves:
 	  print("Exceeded maximum number of random moves, aborting.")
 	  done = True
@@ -91,10 +91,11 @@ def detour_random_path(from_x,from_y,to_x,to_y, cost_map):
 	    move_pos[1] += 1
 	  elif direction == 3: #west
 	    move_pos[0] -= 1
-	print("New move_pos ("+str(move_pos[0])+","+str(move_pos[1])+")")
-        
-      the_path.append((move_pos[0], move_pos[1]))
-      curr_pos = move_pos #update curr_pos
+      
+      if (move_pos != curr_pos): #we actually moved  
+	the_path.append((move_pos[0], move_pos[1]))
+
+      curr_pos = deepcopy(move_pos) #update curr_pos
       if curr_pos == to_pos:
         done = True
       
