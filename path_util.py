@@ -100,7 +100,22 @@ def detour_random_path(from_x,from_y,to_x,to_y, cost_map):
         done = True
       
     return the_path
-      
+
+def norty_a_star_manhattan_path(from_x,from_y,to_x,to_y,cost_map):
+  #idiot check
+  if from_x == to_x and from_y == to_y:
+    return []  
+  
+  #cost of distance from source to proposed position
+  def _g(pos_x, pos_y):
+    return manhattan_distance(pos_x, pos_y, from_x, from_y)
+  
+  #estimate of cost of distance from here to target + difficulty of proposed position
+  def _h(pos_x, pos_y,cost_map):
+    
+  
+  open_set = set()
+  
 
 def a_star_path(self, from_x,from_y,to_x,to_y, unit_number):
     if self.a_star_debug:
