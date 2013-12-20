@@ -111,7 +111,7 @@ def norty_a_star_manhattan_path(from_x,from_y,to_x,to_y,cost_map):
     return manhattan_distance(pos_x, pos_y, from_x, from_y)
   
   #estimate of cost of distance from here to target + difficulty of proposed position
-  def _h(pos_x, pos_y,cost_map):
+  # def _h(pos_x, pos_y,cost_map):
     
   
   open_set = set()

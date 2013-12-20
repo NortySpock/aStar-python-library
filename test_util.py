@@ -118,3 +118,6 @@ def is_valid_move(x,y,cost_map):
   else:
     return False
 
+def fixed_map_wall(cost_map):
+  for i in range(5,35): #horizontal wall
+    cost_map[i][10] = -1
