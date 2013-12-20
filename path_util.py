@@ -1,6 +1,7 @@
 from random import randrange
 from test_util import is_valid_move
 from copy import deepcopy
+import heapq
 
 def manhattan_distance(x1, y1, x2, y2):
     return (abs(x1-x2) + abs(y1-y2))
@@ -100,22 +101,54 @@ def detour_random_path(from_x,from_y,to_x,to_y, cost_map):
         done = True
       
     return the_path
+    
+def create_manhattan_adjacent_positions(pos_x,pos_y):
+  pos_list = []
+  pos_list.append([pos_x,pos_y-1]) #north
+  pos_list.append([pos_x,pos_y+1]) #south
+  pos_list.append([pos_x-1,pos_y]) #west
+  pos_list.append([pos_x+1,pos_y]) #east
+  return pos_list
+
 
 def norty_a_star_manhattan_path(from_x,from_y,to_x,to_y,cost_map):
   #idiot check
   if from_x == to_x and from_y == to_y:
-    return []  
+    return [] 
+  
+  done = False
   
   #cost of distance from source to proposed position
   def _g(pos_x, pos_y):
     return manhattan_distance(pos_x, pos_y, from_x, from_y)
   
   #estimate of cost of distance from here to target + difficulty of proposed position
-  # def _h(pos_x, pos_y,cost_map):
-    
+  def _h(pos_x, pos_y,cost_map): #distance + cost of current space
+    return manhattan_distance(pos_x, pos_y, to_x, to_y) + cost_map[pos_x][pos_y]
   
+  def _f(pos_x,pos_y,cost_map)
+    return _g(pos_x,pos_y) + _h(pos_x,pos_y,cost_map)
+  
+  #set up inital A*
   open_set = set()
+  closed_set = set()
+  #add the starting position
+  open_set.add([from_x,from_y])
   
+  while not done:
+    pos_x,pos_y = open_set.pop() #take one off the open list
+    closed_set.add([pos_x,pos_y]) #add it to the closed list
+    adj_list = create_manhattan_adjacent_positions(pos_x,pos_y)
+    
+    for adj in adj_list:
+      if is_valid_move(adj[0],adj[1],cost_map): 
+        if adj not in closed_set:
+          open_set.add(adj)
+        else:
+          closed_set.add(adj):
+    
+    
+    
 
 def a_star_path(self, from_x,from_y,to_x,to_y, unit_number):
     if self.a_star_debug:

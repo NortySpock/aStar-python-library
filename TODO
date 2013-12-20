@@ -1,1 +1,1 @@
-fiddle with A*
+make adjacent positions link to parent. (root check = self?)
