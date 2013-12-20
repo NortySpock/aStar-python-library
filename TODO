@@ -1,1 +1,1 @@
-make adjacent positions link to parent. (root check = self?)
+make adjacent positions link to parent. (root check = self?) (Turn the whole thing into a dictionary?)
