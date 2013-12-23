@@ -112,6 +112,7 @@ def create_manhattan_adjacent_positions(pos_x,pos_y):
 
 
 def norty_a_star_manhattan_path(from_x,from_y,to_x,to_y,cost_map):
+  # a_star_pos = {'x':None, 'y':None, 'f':None, 'parent':None}
   #idiot check
   if from_x == to_x and from_y == to_y:
     return [] 
@@ -133,19 +134,19 @@ def norty_a_star_manhattan_path(from_x,from_y,to_x,to_y,cost_map):
   open_set = set()
   closed_set = set()
   #add the starting position
-  open_set.add([from_x,from_y])
+  open_set.add({'x':from_x, 'y':from_y, 'f':_f(from_x,from_y,cost_map), 'parent_x':None, 'parent_y':None})
   
   while not done:
-    pos_x,pos_y = open_set.pop() #take one off the open list
-    closed_set.add([pos_x,pos_y]) #add it to the closed list
-    adj_list = create_manhattan_adjacent_positions(pos_x,pos_y)
+    curr_pos = open_set.pop() 
+    closed_set.add(deepcopy(curr_pos))
+    adj_list = create_manhattan_adjacent_positions(curr_pos['x'],curr_pos['y'])
     
     for adj in adj_list:
-      if is_valid_move(adj[0],adj[1],cost_map): 
-        if adj not in closed_set:
-          open_set.add(adj)
-        else:
-          closed_set.add(adj):
+      a_star_adj_pos = {'x':adj[0], 'y':adj[1], 'f':_f(adj[0],adj[1],cost_map), 'parent_x':curr_pos['x'], 'parent_y':curr_pos['y']}
+      if is_valid_move(adj[0],adj[1],cost_map) and adj not in closed_set: 
+        open_set.add(deepcopy(a_star_adj_pos))
+      else:
+        closed_set.add(deepcopy(a_star_adj_pos))
     
     
     
