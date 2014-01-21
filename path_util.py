@@ -112,6 +112,9 @@ def create_manhattan_adjacent_positions(pos_x,pos_y):
 
 
 def norty_a_star_manhattan_path(from_x,from_y,to_x,to_y,cost_map):
+  class Node():
+    def __init__(self,x,y):
+    
   # a_star_pos = {'x':None, 'y':None, 'f':None, 'parent':None}
   #idiot check
   if from_x == to_x and from_y == to_y:
