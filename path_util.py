@@ -112,8 +112,8 @@ def create_manhattan_adjacent_positions(pos_x,pos_y):
 
 
 def norty_a_star_manhattan_path(from_x,from_y,to_x,to_y,cost_map):
-  class Node():
-    def __init__(self,x,y):
+  #class Node():
+    #def __init__(self,x,y):
     
   # a_star_pos = {'x':None, 'y':None, 'f':None, 'parent':None}
   #idiot check
@@ -128,10 +128,10 @@ def norty_a_star_manhattan_path(from_x,from_y,to_x,to_y,cost_map):
   
   #estimate of cost of distance from here to target + difficulty of proposed position
   def _h(pos_x, pos_y,cost_map): #distance + cost of current space
-    return manhattan_distance(pos_x, pos_y, to_x, to_y) + cost_map[pos_x][pos_y]
+    return manhattan_distance(pos_x, pos_y, to_x, to_y + cost_map[pos_x][pos_y])
   
-  def _f(pos_x,pos_y,cost_map)
-    return _g(pos_x,pos_y) + _h(pos_x,pos_y,cost_map)
+  def _f(pos_x,pos_y,cost_map):
+    return (_g(pos_x,pos_y) + _h(pos_x,pos_y,cost_map))
   
   #set up inital A*
   open_set = set()
