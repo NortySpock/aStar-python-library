@@ -148,7 +148,7 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
       candidate_list = [(cur_x + 1, cur_y), (cur_x - 1, cur_y), (cur_x, cur_y + 1), (cur_x, cur_y - 1)]
       #validate the candidates.
       for cand in candidate_list:
-        if not is_valid_move(cand):
+        if not is_valid_move(cand[0],cand[1],cost_map):
           candidate_list.remove(cand)
             
       #generate candidate squares.  if they are traversable, add to open_set and remember parent
@@ -160,7 +160,7 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
       best_f = 9999
       cur_square = (-1, -1)
       for square_tup in open_set: #TODO: No wonder we had perf problems, we're re-calculating f!
-        cur_f = _g(self, square_tup) + _h(self, square_tup, unit_tups)
+        cur_f = _g(square_tup) + _h(square_tup, cost_map)
         if cur_f < best_f:
           cur_square = square_tup
           best_f = cur_f
@@ -183,6 +183,6 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
     
     #Now we need to trace backward through the parents to get the path
     path = []
-    failstat = _makePath(self, cur_square, (from_x, from_y), 0)
+    failstat = _makePath(cur_square, (from_x, from_y), 0)
 
     return path
