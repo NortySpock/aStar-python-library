@@ -1,3 +1,7 @@
 The aStar Python library is our attempt to put together a performant and convenient A* (and possibly others) pathing tool that can be included easily in the Megaminer AI tournament.
 
-To get started, run main.py and it should print out a map with an attempt to find a path from A to B on it.
+To get started, run main.py and it should print out a map with an attempt to find a path from A to B on it. 
+
+The path_util.py file contains a collection of functions that make up some pathfinding tools. It's not well organized yet.
+
+The test_util.py file contains functions that support the testing of the pathfinding tools -- things like generating a random map or printing out the map with the selected path on it.

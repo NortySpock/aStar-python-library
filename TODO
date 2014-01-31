@@ -1,4 +1,5 @@
 Figure out why it's taking a bizarre path
 clean up naming
 look for other optimizations
-write it up in a class/library
+write it up in a drop-in class/library
+PEP 8 style
