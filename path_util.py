@@ -142,7 +142,11 @@ def norty_a_star_manhattan_path(from_x,from_y,to_x,to_y,cost_map):
   open_set = set()
   closed_set = set()
   #add the starting position
-  open_set.add({'x':from_x, 'y':from_y, 'f':_f(from_x,from_y,cost_map), 'parent_x':None, 'parent_y':None})
+  open_set.add({'x':from_x, 'y':from_y, 
+               'f':_f(from_x,from_y,cost_map),
+               'g':0,
+               'h':_h(from_x,from_y,cost_map),
+               'parent_x':None, 'parent_y':None})
   
   while not done:
     curr_pos = open_set.pop() 
