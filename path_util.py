@@ -111,11 +111,16 @@ def create_manhattan_adjacent_positions(pos_x,pos_y):
   return pos_list
 
 
-def norty_a_star_manhattan_path(from_x,from_y,to_x,to_y,cost_map):
-  #class Node():
-    #def __init__(self,x,y):
-    
-  # a_star_pos = {'x':None, 'y':None, 'f':None, 'parent':None}
+def norty_a_star_manhattan_path(from_x,from_y,to_x,to_y,cost_map):    
+  generic_a_star_pos = {'x':None, 
+                        'y':None, 
+                        'f':None, 
+                        'g':None, 
+                        'h':None,
+                        'tile_cost':None,
+                        'parent_x':None, 
+                        'parent_y':None
+                        }
   #idiot check
   if from_x == to_x and from_y == to_y:
     return [] 
