@@ -133,32 +133,38 @@ def norty_a_star_manhattan_path(from_x,from_y,to_x,to_y,cost_map):
   
   #estimate of cost of distance from here to target + difficulty of proposed position
   def _h(pos_x, pos_y,cost_map): #distance + cost of current space
-    return manhattan_distance(pos_x, pos_y, to_x, to_y + cost_map[pos_x][pos_y])
+    dist = manhattan_distance(pos_x, pos_y, to_x, to_y)
+    cost = cost_map[pos_x][pos_y]
+    print("h_dist:"+str(dist))
+    print("h_cost:"+str(cost))
+    return (dist + cost)
   
   def _f(pos_x,pos_y,cost_map):
     return (_g(pos_x,pos_y) + _h(pos_x,pos_y,cost_map))
   
   #set up inital A*
-  open_set = set()
-  closed_set = set()
+  open_list = []
+  closed_list = []
   #add the starting position
-  open_set.add({'x':from_x, 'y':from_y, 
+  open_list.append({'x':from_x, 'y':from_y, 
                'f':_f(from_x,from_y,cost_map),
                'g':0,
                'h':_h(from_x,from_y,cost_map),
                'parent_x':None, 'parent_y':None})
   
-  while not done:
-    curr_pos = open_set.pop() 
-    closed_set.add(deepcopy(curr_pos))
-    adj_list = create_manhattan_adjacent_positions(curr_pos['x'],curr_pos['y'])
+  print(open_list)
+  
+  # while not done:
+    # curr_pos = open_set.pop() 
+    # closed_set.add(deepcopy(curr_pos))
+    # adj_list = create_manhattan_adjacent_positions(curr_pos['x'],curr_pos['y'])
     
-    for adj in adj_list:
-      a_star_adj_pos = {'x':adj[0], 'y':adj[1], 'f':_f(adj[0],adj[1],cost_map), 'parent_x':curr_pos['x'], 'parent_y':curr_pos['y']}
-      if is_valid_move(adj[0],adj[1],cost_map) and adj not in closed_set: 
-        open_set.add(deepcopy(a_star_adj_pos))
-      else:
-        closed_set.add(deepcopy(a_star_adj_pos))
+    # for adj in adj_list:
+      # a_star_adj_pos = {'x':adj[0], 'y':adj[1], 'f':_f(adj[0],adj[1],cost_map), 'parent_x':curr_pos['x'], 'parent_y':curr_pos['y']}
+      # if is_valid_move(adj[0],adj[1],cost_map) and adj not in closed_set: 
+        # open_set.add(deepcopy(a_star_adj_pos))
+      # else:
+        # closed_set.add(deepcopy(a_star_adj_pos))
     
     
     
