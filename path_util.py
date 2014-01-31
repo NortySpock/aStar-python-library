@@ -110,143 +110,56 @@ def create_manhattan_adjacent_positions(pos_x,pos_y):
   pos_list.append([pos_x+1,pos_y]) #east
   return pos_list
 
-
-def norty_a_star_manhattan_path(from_x,from_y,to_x,to_y,cost_map):    
-  generic_a_star_pos = {'x':None, 
-                        'y':None, 
-                        'f':None, 
-                        'g':None, 
-                        'h':None,
-                        'tile_cost':None,
-                        'parent_x':None, 
-                        'parent_y':None
-                        }
-  #idiot check
-  if from_x == to_x and from_y == to_y:
-    return [] 
-  
-  done = False
-  
-  #cost of distance from source to proposed position
-  def _g(pos_x, pos_y):
-    return manhattan_distance(pos_x, pos_y, from_x, from_y)
-  
-  #estimate of cost of distance from here to target + difficulty of proposed position
-  def _h(pos_x, pos_y,cost_map): #distance + cost of current space
-    dist = manhattan_distance(pos_x, pos_y, to_x, to_y)
-    cost = cost_map[pos_x][pos_y]
-    print("h_dist:"+str(dist))
-    print("h_cost:"+str(cost))
-    return (dist + cost)
-  
-  def _f(pos_x,pos_y,cost_map):
-    return (_g(pos_x,pos_y) + _h(pos_x,pos_y,cost_map))
-  
-  #set up inital A*
-  open_list = []
-  closed_list = []
-  #add the starting position
-  open_list.append({'x':from_x, 'y':from_y, 
-               'f':_f(from_x,from_y,cost_map),
-               'g':0,
-               'h':_h(from_x,from_y,cost_map),
-               'parent_x':None, 'parent_y':None})
-  
-  print(open_list)
-  
-  # while not done:
-    # curr_pos = open_set.pop() 
-    # closed_set.add(deepcopy(curr_pos))
-    # adj_list = create_manhattan_adjacent_positions(curr_pos['x'],curr_pos['y'])
+def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
+    from_pos = (from_x,from_y)
+    to_pos = (to_x,to_y)
     
-    # for adj in adj_list:
-      # a_star_adj_pos = {'x':adj[0], 'y':adj[1], 'f':_f(adj[0],adj[1],cost_map), 'parent_x':curr_pos['x'], 'parent_y':curr_pos['y']}
-      # if is_valid_move(adj[0],adj[1],cost_map) and adj not in closed_set: 
-        # open_set.add(deepcopy(a_star_adj_pos))
-      # else:
-        # closed_set.add(deepcopy(a_star_adj_pos))
-    
-    
-    
-
-def a_star_path(self, from_x,from_y,to_x,to_y, unit_number):
-    if self.a_star_debug:
-      print ("STARTING ASTAR")
-    
-    if from_x == to_x and from_y == to_y:
+    if from_pos == to_pos:
       return []
-    #make unit list into tuples
-    unit_tups = zip([i.x for i in self.units[0:]], [i.y for i in self.units[0:]])
-    
-    def _g(self, i):
-      return self.manhattan_distance(i[0], i[1], from_x, from_y)
-    
-    def _h(self, i, unit_tups):
-      difficulty = 1
-      for unit in unit_tups:
-        if unit[0] == i[0] and unit[1] == i[1]:
-          difficulty = 6
-          break
-      if self.tiles[self.getTileIndex(i)].depth < 0 and self.tiles[self.getTileIndex(i)].waterAmount > 0:
-        difficulty = 6
-      return self.manhattan_distance(i[0], i[1], to_x, to_y) * difficulty
       
-    def _makePath(self, childTup, endTup, failsafe):
+    def _g(i):
+      return manhattan_distance(i[0], i[1], from_pos[0], from_pos[1])
+    
+    def _h(i, cost_map):
+      tile_cost = cost_map[i[0]][i[1]]
+      return (manhattan_distance(i[0], i[1], to_pos[0], to_pos[1]) + tile_cost)
+      
+    def _makePath(childTup, endTup, failsafe):
       failsafe += 1
       if childTup != endTup and failsafe != 100:
         path.insert(0, childTup)
-        failsafe = _makePath(self, parents[childTup], endTup, failsafe)
+        failsafe = _makePath(parents[childTup], endTup, failsafe)
       return failsafe
       
     open_set = set()
     closed_set = set()
     candidate_list = []
     parents = {} #{child: parent}
-    cur_x = from_x
-    cur_y = from_y
+    cur_x = from_pos[0]
+    cur_y = from_pos[1]
     
-    on_target = False
-    safety = 0
-    while not on_target:
+    done = False
+    safety = 0 #used to make sure we don't grow infinitely due to bug
+    while not done:
       safety += 1
       closed_set.add((cur_x, cur_y))
       if (cur_x, cur_y) in open_set:
         open_set.remove((cur_x, cur_y))
       candidate_list = [(cur_x + 1, cur_y), (cur_x - 1, cur_y), (cur_x, cur_y + 1), (cur_x, cur_y - 1)]
-      #validate the candidates.  At the minimum they should have birth certificates from USA.
-      for cand in candidate_list[::-1]:
-        # if cand[0] >= self.mapWidth or cand[0] < 0:
-          # if self.path_debug:
-            # print("Trying to remove ", cand)
-          # candidate_list.remove(cand)
-        # if cand[1] >= self.mapHeight or cand[1] < 0:
-          # if self.path_debug:
-            # print("Trying to remove ", cand)
-          # candidate_list.remove(cand)
-        if not self.isValidMoveSquare(cand):
-          #print("Trying to remove ", cand)
+      #validate the candidates.
+      for cand in candidate_list:
+        if not is_valid_move(cand):
           candidate_list.remove(cand)
-        else:
-          if self.tiles[self.getTileIndex(cand)].waterAmount > 0:
-            if (cand in candidate_list):
-              candidate_list.remove(cand)
-            if (cand not in closed_set):
-              closed_set.add(cand)
-      if self.path_debug:
-        print("candidate list: ", candidate_list)
-      
+            
       #generate candidate squares.  if they are traversable, add to open_set and remember parent
       for i in range(len(candidate_list)):
-        if self.path_debug and candidate_list[i][0] * self.mapHeight + candidate_list[i][1] > 799:
-          print ("This index is too big: ", candidate_list[i][0], " ",  self.mapHeight, " ",  candidate_list[i][1])
-        if candidate_list[i] not in closed_set and \
-        self.tiles[candidate_list[i][0] * self.mapHeight + candidate_list[i][1]].owner != self.playerID - 1:
+        if candidate_list[i] not in closed_set:
           open_set.add(deepcopy(candidate_list[i]))
           parents[candidate_list[i]] = (cur_x, cur_y)
       #Calculate f(i) for every square in the open list
       best_f = 9999
       cur_square = (-1, -1)
-      for square_tup in open_set:
+      for square_tup in open_set: #TODO: No wonder we had perf problems, we're re-calculating f!
         cur_f = _g(self, square_tup) + _h(self, square_tup, unit_tups)
         if cur_f < best_f:
           cur_square = square_tup
@@ -257,19 +170,11 @@ def a_star_path(self, from_x,from_y,to_x,to_y, unit_number):
       cur_x = cur_square[0]
       cur_y = cur_square[1]
       if cur_x == to_x and cur_y == to_y:
-        on_target = True
+        done = True
       if safety == 1000:
-        on_target = True
+        done = True
         print("Hit the safety")
-        # print(cur_x, ' ', to_x, ' ', cur_y, ' ', to_y)
-        # print("closed set")
-        # print(closed_set)
-        # print("open set")
-        # print(open_set)
-      if self.turnNumber < 10 and self.a_star_debug:
-        print("at %s, %s :: going to %s, %s"%(cur_x, cur_y, to_x, to_y))
-        print("candidate set")
-        print(candidate_list)
+        print(cur_x, ' ', to_x, ' ', cur_y, ' ', to_y)
         print("closed set")
         print(closed_set)
         print("open set")
@@ -279,12 +184,5 @@ def a_star_path(self, from_x,from_y,to_x,to_y, unit_number):
     #Now we need to trace backward through the parents to get the path
     path = []
     failstat = _makePath(self, cur_square, (from_x, from_y), 0)
-    if self.path_debug:
-      print("Inside a_star_path")
-      print("from %s to %s"%((from_x, from_y), (to_x, to_y)))
-      print(path)
-      print("closed_set: ", closed_set)
-      print("open_set: ", open_set)
-    if self.time_debug:
-      print("unit %s: len(closed_set)= %s, len(open_set) = %s, failstat = %s"%(unit_number, len(closed_set), len(open_set), failstat))
+
     return path
