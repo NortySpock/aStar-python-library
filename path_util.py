@@ -154,21 +154,35 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
     open_list = []
     closed_list = []
     candidate_list = []
-    cur_x = from_pos['x']
-    cur_y = from_pos['y']
+    cur_pos = deepcopy(from_pos)
     
     done = False
     safety = 0 #used to make sure we don't grow infinitely due to bug
     while not done:
       safety += 1
-      closed_list.append((cur_x, cur_y))
-      if (cur_x, cur_y) in open_list:
-        open_list.remove((cur_x, cur_y))
-      candidate_list = [(cur_x + 1, cur_y), (cur_x - 1, cur_y), (cur_x, cur_y + 1), (cur_x, cur_y - 1)]
+      closed_list.append(cur_pos)
+      open_list[:] = [i for i in open_list if not (opening['x'] == cur_pos['x'] and opening['y'] == cur_pos['y'])] #remove current position from list               
+      candidate_tuples = [(cur_pos['x'] + 1, cur_pos['y']), (cur_pos['x'] - 1, cur_pos['y']), (cur_pos['x'], cur_pos['y'] + 1), (cur_pos['x'], cur_pos['y'] - 1)]
       #validate the candidates.
-      for cand in candidate_list:
-        if not is_valid_move(cand[0],cand[1],cost_map):
-          candidate_list.remove(cand)
+      for i in candidate_tuples:
+        if not is_valid_move(i[0],i[1],cost_map):
+          candidate_tuples.remove(i)
+        else:
+          in_closed_list = False
+          for closed in closed_list
+            if (closed['x'] == i[0] and closed['y'] == i[1]):
+              in_closed_list = True
+              break
+      
+          if not in_closed_list:
+            cand_pos = deepcopy(generic_pos)
+            cand_pos['x'] = i[0]
+            cand_pos['y'] = i[1]
+            cand_pos['tilecost'] = cost_map[cand_pos['x']][cand_pos['y']]
+            cand_pos['parent'] = cur_pos
+            cand_pos['f'] = _f((cur_pos['x'], cur_pos['y']), cost_map)
+            open_list.append(deepcopy(cand_pos))
+              
             
       #generate candidate squares.  if they are traversable, add to open_list and remember parent
       for i in range(len(candidate_list)):
