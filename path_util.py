@@ -169,7 +169,7 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
           candidate_tuples.remove(i)
         else:
           in_closed_list = False
-          for closed in closed_list
+          for closed in closed_list:
             if (closed['x'] == i[0] and closed['y'] == i[1]):
               in_closed_list = True
               break
