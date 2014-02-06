@@ -190,7 +190,7 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
           open_list.append(deepcopy(candidate_list[i]))
           parents[candidate_list[i]] = (cur_x, cur_y)
       #Calculate f(i) for every square in the open list
-      best_f = 9999
+      best_f = int("inf")
       cur_square = (-1, -1)
       for square_tup in open_list: #TODO: No wonder we had perf problems, we're re-calculating f!
         cur_f = _g(square_tup) + _h(square_tup, cost_map)
