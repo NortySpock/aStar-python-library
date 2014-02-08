@@ -182,13 +182,11 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
             cand_pos['parent'] = cur_pos
             cand_pos['f'] = _f((cur_pos['x'], cur_pos['y']), cost_map)
             open_list.append(deepcopy(cand_pos))
+      
+      #now that we have open_list with all of the candidates, sort by f, then evaluate the top candidate on the list.
+      open_list = sorted(open_list, key=lambda k: k['f'])
+      
               
-            
-      #generate candidate squares.  if they are traversable, add to open_list and remember parent
-      for i in range(len(candidate_list)):
-        if candidate_list[i] not in closed_list:
-          open_list.append(deepcopy(candidate_list[i]))
-          parents[candidate_list[i]] = (cur_x, cur_y)
       #Calculate f(i) for every square in the open list
       best_f = int("inf")
       cur_square = (-1, -1)
