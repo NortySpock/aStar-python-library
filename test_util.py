@@ -70,6 +70,7 @@ def replace_in_map(map_in, from_var,to_var):
 	map_in[j][i] = to_var
 
 def generate_random_cost_map(cost_map,min_cost, max_cost):
+  #TODO: either accept a seed number or generate a random seed and print it out to allow user to reproduce maps
   max_x = len(cost_map)
   max_y = len(cost_map[0])
   thing = 0
