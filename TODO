@@ -1,4 +1,4 @@
-Figure out why it's taking a bizarre path
+Having sorted open list, pick next square to check and see if we're there yet.
 clean up naming
 look for other optimizations
 write it up in a drop-in class/library
