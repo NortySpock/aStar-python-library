@@ -207,7 +207,8 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
       cur_tup = (cur_pos['x'],cur_pos['y'])
       the_path.append(deepcopy(cur_tup))
       cur_pos = cur_pos['parent']
-    return(the_path.reverse())
+    the_path.reverse()
+    return(the_path)
     
     
     def _makePath(childTup, endTup, failsafe):
