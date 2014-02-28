@@ -1,4 +1,4 @@
-Having sorted open list, pick next square to check and see if we're there yet.
+Write a u-shaped map for more a* testing
 clean up naming
 look for other optimizations
 write it up in a drop-in class/library
