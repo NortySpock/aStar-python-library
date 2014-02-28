@@ -5,7 +5,7 @@ my_cost_map = make_grid(40,20,1) #default cost of 1
 start_pos = [20,0]
 end_pos = [20,19]
 
-fixed_map_wall(my_cost_map)
+u_shaped_wall(my_cost_map)
 
 my_text_map = create_text_map_from_cost_map(my_cost_map)
 my_text_map[start_pos[0]][start_pos[1]] = 'A'

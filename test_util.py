@@ -122,3 +122,10 @@ def is_valid_move(x,y,cost_map):
 def fixed_map_wall(cost_map):
   for i in range(5,35): #horizontal wall
     cost_map[i][10] = -1
+    
+def u_shaped_wall(cost_map):
+  for i in range(5,35): #horizontal wall
+    cost_map[i][15] = -1
+  for i in range(5,15): #vertical
+    cost_map[5][i] = -1
+    cost_map[35][i] = -1
