@@ -111,75 +111,112 @@ def create_manhattan_adjacent_positions(pos_x,pos_y):
   return pos_list
 
 def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
-    from_pos = (from_x,from_y)
-    to_pos = (to_x,to_y)
-    
-    if from_pos == to_pos:
+    if from_x == to_x and from_y == to_y: #if we're looking at the same thing, bail out
       return []
-      
+
+    def _f(i):
+      return (_g(i) + _h(i, cost_map))
+    
     def _g(i):
-      return manhattan_distance(i[0], i[1], from_pos[0], from_pos[1])
+      return manhattan_distance(i[0], i[1], from_x, from_y)
     
     def _h(i, cost_map):
       tile_cost = cost_map[i[0]][i[1]]
-      return (manhattan_distance(i[0], i[1], to_pos[0], to_pos[1]) + tile_cost)
+      return (manhattan_distance(i[0], i[1], to_x, to_y) + tile_cost)
+  
+    generic_pos ={'x':None,
+                  'y':None,
+                  'tilecost':None,
+                  'f':None,
+                  'parent':None,
+                 }
+                 
+    from_pos = deepcopy(generic_pos)
+    from_pos['x'] = from_x
+    from_pos['y'] = from_y
+    from_pos['tilecost'] = cost_map[from_pos['x']][from_pos['y']]
+    from_pos['parent'] = None
+    from_pos['f'] = _f((from_pos['x'], from_pos['y']))
+    
+    to_pos = deepcopy(generic_pos)
+    to_pos['x'] = to_x
+    to_pos['y'] = to_y
+    to_pos['tilecost'] = cost_map[to_pos['x']][to_pos['y']]
+    to_pos['parent'] = None
+    to_pos['f'] = _f((to_pos['x'], to_pos['y']))
+    
+
+    
+
       
-    def _makePath(childTup, endTup, failsafe):
-      failsafe += 1
-      if childTup != endTup and failsafe != 100:
-        path.insert(0, childTup)
-        failsafe = _makePath(parents[childTup], endTup, failsafe)
-      return failsafe
+
       
-    open_set = set()
-    closed_set = set()
+    open_list = []
+    closed_list = []
     candidate_list = []
-    parents = {} #{child: parent}
-    cur_x = from_pos[0]
-    cur_y = from_pos[1]
+    cur_pos = deepcopy(from_pos)
     
     done = False
     safety = 0 #used to make sure we don't grow infinitely due to bug
     while not done:
       safety += 1
-      closed_set.add((cur_x, cur_y))
-      if (cur_x, cur_y) in open_set:
-        open_set.remove((cur_x, cur_y))
-      candidate_list = [(cur_x + 1, cur_y), (cur_x - 1, cur_y), (cur_x, cur_y + 1), (cur_x, cur_y - 1)]
+      closed_list.append(cur_pos)
+      open_list[:] = [i for i in open_list if not (i['x'] == cur_pos['x'] and i['y'] == cur_pos['y'])] #remove current position from list               
+      candidate_tuples = [(cur_pos['x'] + 1, cur_pos['y']), (cur_pos['x'] - 1, cur_pos['y']), (cur_pos['x'], cur_pos['y'] + 1), (cur_pos['x'], cur_pos['y'] - 1)]
       #validate the candidates.
-      for cand in candidate_list:
-        if not is_valid_move(cand[0],cand[1],cost_map):
-          candidate_list.remove(cand)
-            
-      #generate candidate squares.  if they are traversable, add to open_set and remember parent
-      for i in range(len(candidate_list)):
-        if candidate_list[i] not in closed_set:
-          open_set.add(deepcopy(candidate_list[i]))
-          parents[candidate_list[i]] = (cur_x, cur_y)
-      #Calculate f(i) for every square in the open list
-      best_f = 9999
-      cur_square = (-1, -1)
-      for square_tup in open_set: #TODO: No wonder we had perf problems, we're re-calculating f!
-        cur_f = _g(square_tup) + _h(square_tup, cost_map)
-        if cur_f < best_f:
-          cur_square = square_tup
-          best_f = cur_f
-      if cur_square == (-1, -1):
-        return []
-        
-      cur_x = cur_square[0]
-      cur_y = cur_square[1]
-      if cur_x == to_x and cur_y == to_y:
+      for i in candidate_tuples:
+        if not is_valid_move(i[0],i[1],cost_map):
+          candidate_tuples.remove(i)
+        else:
+          in_closed_list = False
+          for closed in closed_list:
+            if (closed['x'] == i[0] and closed['y'] == i[1]):
+              in_closed_list = True
+              break
+      
+          if not in_closed_list:
+            cand_pos = deepcopy(generic_pos)
+            cand_pos['x'] = i[0]
+            cand_pos['y'] = i[1]
+            cand_pos['tilecost'] = cost_map[cand_pos['x']][cand_pos['y']]
+            cand_pos['parent'] = cur_pos
+            cand_pos['f'] = _f((cur_pos['x'], cur_pos['y']))
+            open_list.append(deepcopy(cand_pos))
+      
+      #now that we have open_list with all of the candidates, sort by f, then evaluate the top candidate on the list.
+      open_list = sorted(open_list, key=lambda k: k['f'])
+      cur_pos = deepcopy(open_list[0])
+      
+      if(cur_pos['x'] ==  to_pos['x'] and cur_pos['y'] == to_pos['y']):
         done = True
-      if safety == 1000:
+      if(safety > (len(cost_map)*len(cost_map[0]))): #If we've gone more iterations than there are squares on the map, we must be lost
         done = True
         print("Hit the safety")
-        print(cur_x, ' ', to_x, ' ', cur_y, ' ', to_y)
-        print("closed set")
-        print(closed_set)
-        print("open set")
-        print(open_set)
-      candidate_list = []
+        print("from: ("+str(from_x)+","+str(from_y)+")")
+        print("  to: ("+str(to_x)+","+str(to_y)+")")
+        print(cur_pos)
+        print("closed:")
+        print(closed_list)
+        print("open:")
+        print(open_list)
+        return []
+  
+    #so then we have a path, write it back out to the path list
+    the_path = []
+    while cur_pos['parent'] is not None:
+      cur_tup = (cur_pos['x'],cur_pos['y'])
+      the_path.append(deepcopy(cur_tup))
+      cur_pos = cur_pos['parent']
+    the_path.reverse()
+    return(the_path)
+    
+    
+    def _makePath(childTup, endTup, failsafe):
+      failsafe += 1
+      if childTup != endTup and failsafe <= 1000:
+        path.insert(0, childTup)
+        failsafe = _makePath(parents[childTup], endTup, failsafe)
+      return failsafe
     
     #Now we need to trace backward through the parents to get the path
     path = []
