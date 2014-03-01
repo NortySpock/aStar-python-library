@@ -61,6 +61,11 @@ def create_text_map_from_cost_map(cost_map):
         
   return text_map
 
+def print_list_of_tuples_on_map(in_list, map_char,text_map):
+  for pos in in_list:
+    text_map[pos[0]][pos[1]] = str(map_char)[0]
+  
+
 def replace_in_map(map_in, from_var,to_var):
   max_x = len(map_in)
   max_y = len(map_in[0])

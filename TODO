@@ -1,4 +1,4 @@
-Write a u-shaped map for more a* testing
+Determine what happens when target is unreachable
 clean up naming
 look for other optimizations
 write it up in a drop-in class/library

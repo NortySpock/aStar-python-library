@@ -11,8 +11,10 @@ my_text_map = create_text_map_from_cost_map(my_cost_map)
 my_text_map[start_pos[0]][start_pos[1]] = 'A'
 my_text_map[end_pos[0]][end_pos[1]] = 'B'
 pretty_print_map(my_text_map) #show board before we tamper with it
-the_path = a_star_manhattan_path(start_pos[0],start_pos[1],end_pos[0],end_pos[1],my_cost_map)
-print_path_on_map(my_text_map,the_path)
+path_dict = a_star_manhattan_path(start_pos[0],start_pos[1],end_pos[0],end_pos[1],my_cost_map)
+print_list_of_tuples_on_map(path_dict['open'], '~',my_text_map)
+print_list_of_tuples_on_map(path_dict['closed'], '.',my_text_map)
+print_path_on_map(my_text_map,path_dict['path'])
 pretty_print_map(my_text_map)
-check_path_for_validity(start_pos[0],start_pos[1],end_pos[0],end_pos[1],the_path, my_cost_map)
+check_path_for_validity(start_pos[0],start_pos[1],end_pos[0],end_pos[1],path_dict['path'], my_cost_map)
 

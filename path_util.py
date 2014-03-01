@@ -111,8 +111,10 @@ def create_manhattan_adjacent_positions(pos_x,pos_y):
   return pos_list
 
 def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
+    return_dictionary = {}
+    return_dictionary['path'] = []
     if from_x == to_x and from_y == to_y: #if we're looking at the same thing, bail out
-      return []
+      return return_dictionary
 
     def _f(i):
       return (_g(i) + _h(i, cost_map))
@@ -200,6 +202,7 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
         print("open:")
         print(open_list)
         return []
+      
   
     #so then we have a path, write it back out to the path list
     the_path = []
@@ -208,7 +211,20 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
       the_path.append(deepcopy(cur_tup))
       cur_pos = cur_pos['parent']
     the_path.reverse()
-    return(the_path)
+    return_dictionary['path'] = deepcopy(the_path)
+    
+    return_open_and_closed_lists = True
+    if return_open_and_closed_lists:
+      #need to convert dictionary objects to list of tuples
+      open_list_tuples = []
+      for pos in open_list:
+        open_list_tuples.append(deepcopy((pos['x'],pos['y'])))
+      closed_list_tuples = []
+      for pos in closed_list:
+        closed_list_tuples.append(deepcopy((pos['x'],pos['y'])))
+      return_dictionary['open'] = open_list_tuples
+      return_dictionary['closed'] = closed_list_tuples
+    return(return_dictionary)
     
     
     def _makePath(childTup, endTup, failsafe):
