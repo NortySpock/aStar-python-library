@@ -227,24 +227,10 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
       #need to convert dictionary objects to list of tuples
       open_list_tuples = []
       for pos in open_list:
-        open_list_tuples.append(deepcopy((pos['x'],pos['y'])))
+        open_list_tuples.append((pos['x'],pos['y']))
       closed_list_tuples = []
       for pos in closed_list:
-        closed_list_tuples.append(deepcopy((pos['x'],pos['y'])))
+        closed_list_tuples.append((pos['x'],pos['y']))
       return_dictionary['open'] = open_list_tuples
       return_dictionary['closed'] = closed_list_tuples
     return(return_dictionary)
-    
-    
-    def _makePath(childTup, endTup, failsafe):
-      failsafe += 1
-      if childTup != endTup and failsafe <= 1000:
-        path.insert(0, childTup)
-        failsafe = _makePath(parents[childTup], endTup, failsafe)
-      return failsafe
-    
-    #Now we need to trace backward through the parents to get the path
-    path = []
-    failstat = _makePath(cur_square, (from_x, from_y), 0)
-
-    return path
