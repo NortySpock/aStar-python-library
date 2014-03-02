@@ -185,6 +185,11 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
             cand_pos['f'] = _f((cur_pos['x'], cur_pos['y']))
             open_list.append(deepcopy(cand_pos))
       
+      if not open_list: #if we ever find that the open list is empty, that means there is no path from here to there, so we're just going to abort early
+        print("Could not find a valid path from ("+str(from_x)+","+str(from_y)+") to ("+str(to_x)+","+str(to_y)+").")
+        return return_dictionary
+        
+      
       #now that we have open_list with all of the candidates, sort by f, then evaluate the top candidate on the list.
       open_list = sorted(open_list, key=lambda k: k['f'])
       cur_pos = deepcopy(open_list[0])

@@ -104,17 +104,20 @@ def is_manhattan_adjacent(p1_x,p1_y, p2_x,p2_y):
     return False
 
 def check_path_for_validity(from_x,from_y,to_x,to_y, path, cost_map):
-  prev = [from_x,from_y]
-  
-  for point in path:
-    if not is_valid_move(point[0],point[1],cost_map):
-      print "Move to ("+str(point[0])+","+str(point[1])+") is not valid!"
-    if not is_manhattan_adjacent(prev[0],prev[1],point[0],point[1]):
-      print "Prev pos ("+str(prev[0])+","+str(prev[1])+")"+" and curr pos ("+str(point[0])+","+str(point[1])+") are not adjacent!"
-    prev = point
-  last = path[-1]
-  if last != (to_x,to_y):
-    print "Final pos ("+str(last[0])+","+str(last[1])+")"+" is not the target at("+str(to_x)+","+str(to_y)+")!"
+  if not path:
+    print("Path was empty!")
+  else:
+    prev = [from_x,from_y]
+    
+    for point in path:
+      if not is_valid_move(point[0],point[1],cost_map):
+        print "Move to ("+str(point[0])+","+str(point[1])+") is not valid!"
+      if not is_manhattan_adjacent(prev[0],prev[1],point[0],point[1]):
+        print "Prev pos ("+str(prev[0])+","+str(prev[1])+")"+" and curr pos ("+str(point[0])+","+str(point[1])+") are not adjacent!"
+      prev = point
+    last = path[-1]
+    if last != (to_x,to_y):
+      print "Final pos ("+str(last[0])+","+str(last[1])+")"+" is not the target at("+str(to_x)+","+str(to_y)+")!"
 
 def is_valid_move(x,y,cost_map):
   max_x = len(cost_map)
@@ -134,3 +137,9 @@ def u_shaped_wall(cost_map):
   for i in range(5,15): #vertical
     cost_map[5][i] = -1
     cost_map[35][i] = -1
+    
+    
+def unbreachable_wall(cost_map):
+  map_len = len(cost_map)
+  for i in range(0,map_len-1):
+    cost_map[i][15] = -1
