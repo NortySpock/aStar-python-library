@@ -5,6 +5,10 @@ import heapq
 
 def manhattan_distance(x1, y1, x2, y2):
     return (abs(x1-x2) + abs(y1-y2))
+  
+def number_of_tiles_on_rectangular_map(map_in):
+  return (len(map_in)*len(map_in[0]))
+  
 
 # returns a list of xy tuples that are a path from here to there  
 #this does not take into account obstacles
@@ -196,7 +200,7 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
       
       if(cur_pos['x'] ==  to_pos['x'] and cur_pos['y'] == to_pos['y']):
         done = True
-      if(safety > (len(cost_map)*len(cost_map[0]))): #If we've gone more iterations than there are squares on the map, we must be lost
+      if(safety > (number_of_tiles_on_rectangular_map(cost_map))): #If we've gone more iterations than there are squares on the map, we must be lost
         done = True
         print("Hit the safety")
         print("from: ("+str(from_x)+","+str(from_y)+")")

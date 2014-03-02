@@ -2,10 +2,10 @@ import path_util as path
 import test_util as test
 
 my_cost_map = test.make_grid(40,20,1) #default cost of 1
-start_pos = [20,0]
-end_pos = [20,19]
+start_pos = [5,0]
+end_pos = [10,19]
 
-test.u_shaped_wall(my_cost_map)
+#test.u_shaped_wall(my_cost_map)
 
 my_text_map = test.create_text_map_from_cost_map(my_cost_map)
 my_text_map[start_pos[0]][start_pos[1]] = 'A'
