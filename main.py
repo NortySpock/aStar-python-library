@@ -1,9 +1,9 @@
 import path_util as path
 import test_util as test
 
-my_cost_map = test.make_grid(40,20,1) #default cost of 1
-start_pos = [5,0]
-end_pos = [10,19]
+my_cost_map = test.make_grid(80,40,1) #default cost of 1
+start_pos = [1,1]
+end_pos = [79,39]
 
 #test.u_shaped_wall(my_cost_map)
 
