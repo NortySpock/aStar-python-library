@@ -1,1 +1,1 @@
-look for other optimizations
+look for other optimizations (python -m cProfile main.py)
