@@ -129,22 +129,15 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
     def _h(i, cost_map):
       tile_cost = cost_map[i[0]][i[1]]
       return (manhattan_distance(i[0], i[1], to_x, to_y) + tile_cost)
-  
-    generic_pos ={'x':None,
-                  'y':None,
-                  'tilecost':None,
-                  'f':None,
-                  'parent':None,
-                 }
                  
-    from_pos = deepcopy(generic_pos)
+    from_pos = {}
     from_pos['x'] = from_x
     from_pos['y'] = from_y
     from_pos['tilecost'] = cost_map[from_pos['x']][from_pos['y']]
     from_pos['parent'] = None
     from_pos['f'] = _f((from_pos['x'], from_pos['y']))
     
-    to_pos = deepcopy(generic_pos)
+    to_pos = {}
     to_pos['x'] = to_x
     to_pos['y'] = to_y
     to_pos['tilecost'] = cost_map[to_pos['x']][to_pos['y']]
@@ -181,7 +174,7 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
               break
       
           if not in_closed_list:
-            cand_pos = deepcopy(generic_pos)
+            cand_pos = {}
             cand_pos['x'] = i[0]
             cand_pos['y'] = i[1]
             cand_pos['tilecost'] = cost_map[cand_pos['x']][cand_pos['y']]
