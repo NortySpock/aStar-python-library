@@ -189,7 +189,7 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
       
       #now that we have open_list with all of the candidates, sort by f, then evaluate the top candidate on the list.
       open_list = sorted(open_list, key=lambda k: k['f'])
-      open_list.reverse()
+      #open_list.reverse()
       cur_pos = open_list[0]
       
       if(cur_pos['x'] ==  to_pos['x'] and cur_pos['y'] == to_pos['y']):
