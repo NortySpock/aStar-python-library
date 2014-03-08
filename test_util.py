@@ -106,7 +106,7 @@ def is_manhattan_adjacent(p1_x,p1_y, p2_x,p2_y):
 def print_tile_tuples_from_list_of_dictionaries(list_in):
   printable_list = []
   for thing in list_in:
-    printable_list.append((thing['x'],thing['y'],thing['f']))
+    printable_list.append((thing['x'],thing['y'],thing['f'],thing['g'],thing['h']))
   print(printable_list)
   
 
