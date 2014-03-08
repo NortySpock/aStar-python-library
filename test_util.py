@@ -103,6 +103,13 @@ def is_manhattan_adjacent(p1_x,p1_y, p2_x,p2_y):
   else:
     return False
 
+def print_tile_tuples_from_list_of_dictionaries(list_in):
+  printable_list = []
+  for thing in list_in:
+    printable_list.append((thing['x'],thing['y'],thing['f']))
+  print(printable_list)
+  
+
 def check_path_for_validity(from_x,from_y,to_x,to_y, path, cost_map):
   if not path:
     print("Path was empty!")
