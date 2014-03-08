@@ -1,8 +1,8 @@
 from random import randrange
 from test_util import is_valid_move
 from test_util import is_inside_map
+from test_util import print_tile_tuples_from_list_of_dictionaries
 from copy import deepcopy
-import heapq
 
 def manhattan_distance(x1, y1, x2, y2):
     return (abs(x1-x2) + abs(y1-y2))
@@ -131,9 +131,16 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
     def _g(i):
       return manhattan_distance(i[0], i[1], from_x, from_y)
     
+    def _cross_prod(from_x, from_y, cur_x, cur_y, to_x, to_y):
+      cross_prod = abs((cur_x-to_x)*(from_y-to_y) - (from_x-to_x)*(cur_y-to_y))
+      return cross_prod
+    
     def _h(i, cost_map):
       tile_cost = cost_map[i[0]][i[1]]
-      return (manhattan_distance(i[0], i[1], to_x, to_y) + tile_cost)
+      #calulate the cross product for two vectors -- one straight from start to goal and one from curr_pos position. 
+      #Slightly penalize deviation from "as the crow flies" to focus the search on empty maps.
+      divergence_factor = (_cross_prod(from_x, from_y, i[0], i[1], to_x, to_y) * (1.0/number_of_tiles_on_rectangular_map(cost_map)))
+      return ((manhattan_distance(i[0], i[1], to_x, to_y) + tile_cost + divergence_factor))
                  
     from_pos = {}
     from_pos['x'] = from_x
@@ -185,7 +192,9 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
             cand_pos['tilecost'] = cost_map[cand_pos['x']][cand_pos['y']]
             cand_pos['parent'] = cur_pos
             cand_pos['f'] = _f((cur_pos['x'], cur_pos['y']))
-            open_list.append(deepcopy(cand_pos))
+            cand_pos['g'] = _g((cur_pos['x'], cur_pos['y']))
+            cand_pos['h'] = _h((cur_pos['x'], cur_pos['y']),cost_map)
+            open_list.append(cand_pos)
       
       if not open_list: #if we ever find that the open list is empty, that means there is no path from here to there, so we're just going to abort early
         print("Could not find a valid path from ("+str(from_x)+","+str(from_y)+") to ("+str(to_x)+","+str(to_y)+").")
