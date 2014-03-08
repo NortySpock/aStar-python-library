@@ -118,11 +118,19 @@ def check_path_for_validity(from_x,from_y,to_x,to_y, path, cost_map):
     last = path[-1]
     if last != (to_x,to_y):
       print "Final pos ("+str(last[0])+","+str(last[1])+")"+" is not the target at("+str(to_x)+","+str(to_y)+")!"
+      
+def is_inside_map(x,y,cost_map):
+  max_x = len(cost_map)
+  max_y = len(cost_map[0])
+  if(0 <= x < max_x and 0 <= y < max_y):
+    return True
+  else:
+    return False
 
 def is_valid_move(x,y,cost_map):
   max_x = len(cost_map)
   max_y = len(cost_map[0])
-  if(0 <= x < max_x and 0 <= y < max_y and cost_map[x][y] != -1):
+  if(is_inside_map(x,y,cost_map) and cost_map[x][y] != -1):
     return True
   else:
     return False

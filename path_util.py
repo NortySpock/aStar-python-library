@@ -1,5 +1,6 @@
 from random import randrange
 from test_util import is_valid_move
+from test_util import is_inside_map
 from copy import deepcopy
 import heapq
 
@@ -118,6 +119,10 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
     return_dictionary = {}
     return_dictionary['path'] = []
     if from_x == to_x and from_y == to_y: #if we're looking at the same thing, bail out
+      return return_dictionary
+    if not is_inside_map(from_x,from_y,cost_map):
+      return return_dictionary
+    if not is_inside_map(to_x,to_y,cost_map):
       return return_dictionary
 
     def _f(i):
