@@ -189,7 +189,7 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
             cand_pos['f'] = _f((cur_pos['x'], cur_pos['y']))
             cand_pos['g'] = _g((cur_pos['x'], cur_pos['y']))
             cand_pos['h'] = _h((cur_pos['x'], cur_pos['y']),cost_map)
-            open_list.append(deepcopy(cand_pos))
+            open_list.append(cand_pos)
       
       if not open_list: #if we ever find that the open list is empty, that means there is no path from here to there, so we're just going to abort early
         print("Could not find a valid path from ("+str(from_x)+","+str(from_y)+") to ("+str(to_x)+","+str(to_y)+").")
