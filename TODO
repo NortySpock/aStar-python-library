@@ -1,5 +1,1 @@
-Write a u-shaped map for more a* testing
-clean up naming
-look for other optimizations
-write it up in a drop-in class/library
-PEP 8 style
+look for other optimizations (python -m cProfile main.py)

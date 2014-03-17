@@ -1,10 +1,15 @@
 from random import randrange
 from test_util import is_valid_move
+from test_util import is_inside_map
+from test_util import print_tile_tuples_from_list_of_dictionaries
 from copy import deepcopy
-import heapq
 
 def manhattan_distance(x1, y1, x2, y2):
     return (abs(x1-x2) + abs(y1-y2))
+  
+def number_of_tiles_on_rectangular_map(map_in):
+  return (len(map_in)*len(map_in[0]))
+  
 
 # returns a list of xy tuples that are a path from here to there  
 #this does not take into account obstacles
@@ -111,8 +116,14 @@ def create_manhattan_adjacent_positions(pos_x,pos_y):
   return pos_list
 
 def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
+    return_dictionary = {}
+    return_dictionary['path'] = []
     if from_x == to_x and from_y == to_y: #if we're looking at the same thing, bail out
-      return []
+      return return_dictionary
+    if not is_inside_map(from_x,from_y,cost_map):
+      return return_dictionary
+    if not is_inside_map(to_x,to_y,cost_map):
+      return return_dictionary
 
     def _f(i):
       return (_g(i) + _h(i, cost_map))
@@ -120,25 +131,25 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
     def _g(i):
       return manhattan_distance(i[0], i[1], from_x, from_y)
     
+    def _cross_prod(from_x, from_y, cur_x, cur_y, to_x, to_y):
+      cross_prod = abs((cur_x-to_x)*(from_y-to_y) - (from_x-to_x)*(cur_y-to_y))
+      return cross_prod
+    
     def _h(i, cost_map):
       tile_cost = cost_map[i[0]][i[1]]
-      return (manhattan_distance(i[0], i[1], to_x, to_y) + tile_cost)
-  
-    generic_pos ={'x':None,
-                  'y':None,
-                  'tilecost':None,
-                  'f':None,
-                  'parent':None,
-                 }
+      #calulate the cross product for two vectors -- one straight from start to goal and one from curr_pos position. 
+      #Slightly penalize deviation from "as the crow flies" to focus the search on empty maps.
+      divergence_factor = (_cross_prod(from_x, from_y, i[0], i[1], to_x, to_y) * (1.0/number_of_tiles_on_rectangular_map(cost_map)))
+      return ((manhattan_distance(i[0], i[1], to_x, to_y) + tile_cost + divergence_factor))
                  
-    from_pos = deepcopy(generic_pos)
+    from_pos = {}
     from_pos['x'] = from_x
     from_pos['y'] = from_y
     from_pos['tilecost'] = cost_map[from_pos['x']][from_pos['y']]
     from_pos['parent'] = None
     from_pos['f'] = _f((from_pos['x'], from_pos['y']))
     
-    to_pos = deepcopy(generic_pos)
+    to_pos = {}
     to_pos['x'] = to_x
     to_pos['y'] = to_y
     to_pos['tilecost'] = cost_map[to_pos['x']][to_pos['y']]
@@ -175,21 +186,28 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
               break
       
           if not in_closed_list:
-            cand_pos = deepcopy(generic_pos)
+            cand_pos = {}
             cand_pos['x'] = i[0]
             cand_pos['y'] = i[1]
             cand_pos['tilecost'] = cost_map[cand_pos['x']][cand_pos['y']]
             cand_pos['parent'] = cur_pos
             cand_pos['f'] = _f((cur_pos['x'], cur_pos['y']))
-            open_list.append(deepcopy(cand_pos))
+            cand_pos['g'] = _g((cur_pos['x'], cur_pos['y']))
+            cand_pos['h'] = _h((cur_pos['x'], cur_pos['y']),cost_map)
+            open_list.append(cand_pos)
+      
+      if not open_list: #if we ever find that the open list is empty, that means there is no path from here to there, so we're just going to abort early
+        print("Could not find a valid path from ("+str(from_x)+","+str(from_y)+") to ("+str(to_x)+","+str(to_y)+").")
+        return return_dictionary
+        
       
       #now that we have open_list with all of the candidates, sort by f, then evaluate the top candidate on the list.
       open_list = sorted(open_list, key=lambda k: k['f'])
-      cur_pos = deepcopy(open_list[0])
+      cur_pos = open_list[0]
       
       if(cur_pos['x'] ==  to_pos['x'] and cur_pos['y'] == to_pos['y']):
         done = True
-      if(safety > (len(cost_map)*len(cost_map[0]))): #If we've gone more iterations than there are squares on the map, we must be lost
+      if(safety > (number_of_tiles_on_rectangular_map(cost_map))): #If we've gone more iterations than there are squares on the map, we must be lost
         done = True
         print("Hit the safety")
         print("from: ("+str(from_x)+","+str(from_y)+")")
@@ -200,6 +218,7 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
         print("open:")
         print(open_list)
         return []
+      
   
     #so then we have a path, write it back out to the path list
     the_path = []
@@ -208,18 +227,17 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
       the_path.append(deepcopy(cur_tup))
       cur_pos = cur_pos['parent']
     the_path.reverse()
-    return(the_path)
+    return_dictionary['path'] = the_path
     
-    
-    def _makePath(childTup, endTup, failsafe):
-      failsafe += 1
-      if childTup != endTup and failsafe <= 1000:
-        path.insert(0, childTup)
-        failsafe = _makePath(parents[childTup], endTup, failsafe)
-      return failsafe
-    
-    #Now we need to trace backward through the parents to get the path
-    path = []
-    failstat = _makePath(cur_square, (from_x, from_y), 0)
-
-    return path
+    return_open_and_closed_lists = True
+    if return_open_and_closed_lists:
+      #need to convert dictionary objects to list of tuples
+      open_list_tuples = []
+      for pos in open_list:
+        open_list_tuples.append((pos['x'],pos['y']))
+      closed_list_tuples = []
+      for pos in closed_list:
+        closed_list_tuples.append((pos['x'],pos['y']))
+      return_dictionary['open'] = open_list_tuples
+      return_dictionary['closed'] = closed_list_tuples
+    return(return_dictionary)
