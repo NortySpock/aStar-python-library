@@ -1,5 +1,1 @@
-Having sorted open list, pick next square to check and see if we're there yet.
-clean up naming
-look for other optimizations
-write it up in a drop-in class/library
-PEP 8 style
+look for other optimizations (python -m cProfile main.py)
