@@ -41,7 +41,6 @@ def populate_grid(grid,list_of_three_tuples):
     for point in list_of_three_tuples:
       if(point[0] >= 0 and point[0] < max_x) and (point[1] >= 0 and point[1] < max_y): #sanity
         grid[point[0]][point[1]] = point[2] # put in value at position (x, y, value)
-  
 
     
 def make_grid(x,y,init=None):

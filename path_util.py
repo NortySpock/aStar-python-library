@@ -19,6 +19,19 @@ def is_valid_move(x,y,cost_map):
     return True
   else:
     return False
+
+def apply_tuple_to_cost_map(tup,cost_map):
+  #tuple format is (x,y,cost)
+  #coordinates outside cost_map are warned and ignored
+  if(is_inside_map(tup[0],tup[1],cost_map)):
+    cost_map[tup[0]][tup[1]] = tup[2]
+  else: print("Cannot apply tuple at ("+str(tup[0])+","+str(tup[1])+")")
+  
+def apply_list_of_tuples_to_cost_map(list_in,cost_map):
+  for i in list_in:
+    apply_tuple_to_cost_map(i,cost_map)
+  
+  
     
 def number_of_tiles_on_rectangular_map(map_in):
   return (len(map_in)*len(map_in[0]))
