@@ -61,7 +61,7 @@ def naive_path(from_x,from_y,to_x,to_y):
       
     return the_path
   
-def detour_random_path(from_x,from_y,to_x,to_y, cost_map):
+def random_detour_path(from_x,from_y,to_x,to_y, cost_map):
     the_path = []
     from_pos = [from_x, from_y]
     to_pos = [to_x,to_y]
