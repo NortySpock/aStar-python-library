@@ -178,7 +178,7 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
     open_list = []
     closed_list = []
     candidate_list = []
-    cur_pos = deepcopy(from_pos)
+    cur_pos = from_pos
     
     done = False
     safety = 0 #used to make sure we don't grow infinitely due to bug
@@ -236,8 +236,7 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
     #so then we have a path, write it back out to the path list
     the_path = []
     while cur_pos['parent'] is not None:
-      cur_tup = (cur_pos['x'],cur_pos['y'])
-      the_path.append(deepcopy(cur_tup))
+      the_path.append((cur_pos['x'],cur_pos['y']))
       cur_pos = cur_pos['parent']
     the_path.reverse()
     return_dictionary['path'] = the_path
