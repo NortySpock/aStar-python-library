@@ -65,8 +65,8 @@ def random_detour_path(from_x,from_y,to_x,to_y, cost_map):
     the_path = []
     from_pos = [from_x, from_y]
     to_pos = [to_x,to_y]
-    curr_pos = deepcopy(from_pos)
-    move_pos = deepcopy(from_pos)
+    curr_pos = from_pos
+    move_pos = from_pos
     done = False
     random_move_counter = 0
     max_random_moves = 10
@@ -114,7 +114,7 @@ def random_detour_path(from_x,from_y,to_x,to_y, cost_map):
       if (move_pos != curr_pos): #we actually moved  
         the_path.append((move_pos[0], move_pos[1]))
 
-      curr_pos = deepcopy(move_pos) #update curr_pos
+      curr_pos = move_pos #update curr_pos
       if curr_pos == to_pos:
         done = True
       
