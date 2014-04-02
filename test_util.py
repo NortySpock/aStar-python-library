@@ -1,6 +1,7 @@
 from random import randrange
 from copy import deepcopy
-
+from path_util import is_valid_move
+from path_util import is_inside_map
 
 def pretty_print_map(double_list):
   numcols = len(double_list)    
@@ -72,7 +73,7 @@ def replace_in_map(map_in, from_var,to_var):
   for i in xrange(max_y):
     for j in xrange(max_x):
       if map_in[j][i] == from_var:
-	map_in[j][i] = to_var
+        map_in[j][i] = to_var
 
 def generate_random_cost_map(cost_map,min_cost, max_cost):
   #TODO: either accept a seed number or generate a random seed and print it out to allow user to reproduce maps
@@ -118,29 +119,15 @@ def check_path_for_validity(from_x,from_y,to_x,to_y, path, cost_map):
     
     for point in path:
       if not is_valid_move(point[0],point[1],cost_map):
-        print "Move to ("+str(point[0])+","+str(point[1])+") is not valid!"
+        print("Move to ("+str(point[0])+","+str(point[1])+") is not valid!")
       if not is_manhattan_adjacent(prev[0],prev[1],point[0],point[1]):
-        print "Prev pos ("+str(prev[0])+","+str(prev[1])+")"+" and curr pos ("+str(point[0])+","+str(point[1])+") are not adjacent!"
+        print("Prev pos ("+str(prev[0])+","+str(prev[1])+")"+" and curr pos ("+str(point[0])+","+str(point[1])+") are not adjacent!")
       prev = point
     last = path[-1]
     if last != (to_x,to_y):
-      print "Final pos ("+str(last[0])+","+str(last[1])+")"+" is not the target at("+str(to_x)+","+str(to_y)+")!"
+      print("Final pos ("+str(last[0])+","+str(last[1])+")"+" is not the target at("+str(to_x)+","+str(to_y)+")!")
       
-def is_inside_map(x,y,cost_map):
-  max_x = len(cost_map)
-  max_y = len(cost_map[0])
-  if(0 <= x < max_x and 0 <= y < max_y):
-    return True
-  else:
-    return False
 
-def is_valid_move(x,y,cost_map):
-  max_x = len(cost_map)
-  max_y = len(cost_map[0])
-  if(is_inside_map(x,y,cost_map) and cost_map[x][y] != -1):
-    return True
-  else:
-    return False
 
 def fixed_map_wall(cost_map):
   for i in range(5,35): #horizontal wall

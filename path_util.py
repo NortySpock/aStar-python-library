@@ -1,12 +1,25 @@
 from random import randrange
-from test_util import is_valid_move
-from test_util import is_inside_map
-from test_util import print_tile_tuples_from_list_of_dictionaries
 from copy import deepcopy
 
 def manhattan_distance(x1, y1, x2, y2):
     return (abs(x1-x2) + abs(y1-y2))
-  
+
+def is_inside_map(x,y,cost_map):
+  max_x = len(cost_map)
+  max_y = len(cost_map[0])
+  if(0 <= x < max_x and 0 <= y < max_y):
+    return True
+  else:
+    return False
+    
+def is_valid_move(x,y,cost_map):
+  max_x = len(cost_map)
+  max_y = len(cost_map[0])
+  if(is_inside_map(x,y,cost_map) and cost_map[x][y] != -1):
+    return True
+  else:
+    return False
+    
 def number_of_tiles_on_rectangular_map(map_in):
   return (len(map_in)*len(map_in[0]))
   
@@ -81,25 +94,25 @@ def detour_random_path(from_x,from_y,to_x,to_y, cost_map):
           move_pos[0] = curr_pos[0] - 1
       
       while not is_valid_move(move_pos[0], move_pos[1], cost_map) and not done:
-	random_move_counter += 1
+        random_move_counter += 1
         print("Suggested move ("+str(move_pos[0])+","+str(move_pos[1])+") found invalid, moving randomly for the "+str(random_move_counter)+"th time.")
         move_pos = deepcopy(curr_pos) #default to no move.
         if random_move_counter > max_random_moves:
-	  print("Exceeded maximum number of random moves, aborting.")
-	  done = True
-	else:
-	  direction = randrange(0,4)
-	  if direction == 0: #north
-	    move_pos[1] -= 1
-	  elif direction == 1: #east
-	    move_pos[0]+= 1
-	  elif direction == 2: #south
-	    move_pos[1] += 1
-	  elif direction == 3: #west
-	    move_pos[0] -= 1
+          print("Exceeded maximum number of random moves, aborting.")
+          done = True
+        else:
+          direction = randrange(0,4)
+          if direction == 0: #north
+            move_pos[1] -= 1
+          elif direction == 1: #east
+            move_pos[0]+= 1
+          elif direction == 2: #south
+            move_pos[1] += 1
+          elif direction == 3: #west
+            move_pos[0] -= 1
       
       if (move_pos != curr_pos): #we actually moved  
-	the_path.append((move_pos[0], move_pos[1]))
+        the_path.append((move_pos[0], move_pos[1]))
 
       curr_pos = deepcopy(move_pos) #update curr_pos
       if curr_pos == to_pos:
