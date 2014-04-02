@@ -26,7 +26,7 @@ def number_of_tiles_on_rectangular_map(map_in):
 
 # returns a list of xy tuples that are a path from here to there  
 #this does not take into account obstacles
-def my_dumb_path(from_x,from_y,to_x,to_y):
+def naive_path(from_x,from_y,to_x,to_y):
         
     the_path = []
     from_pos = [from_x, from_y]
