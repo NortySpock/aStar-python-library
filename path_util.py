@@ -1,5 +1,6 @@
 from random import randrange
 from copy import deepcopy
+import heapq
 
 def manhattan_distance(x1, y1, x2, y2):
     return (abs(x1-x2) + abs(y1-y2))
@@ -188,17 +189,24 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
       
 
       
-    open_list = []
+    open_heap = []
     closed_set = set()
     candidate_list = []
     cur_pos = from_pos
     
     done = False
     safety = 0 #used to make sure we don't grow infinitely due to bug
+    heapq.heappush(open_heap, (from_pos['f'],from_pos))
     while not done:
+      
+      if not open_heap: #if we ever find that the open list is empty, that means there is no path from here to there, so we're just going to abort early
+        print("Could not find a valid path from ("+str(from_x)+","+str(from_y)+") to ("+str(to_x)+","+str(to_y)+").")
+        return return_dictionary
+      
       safety += 1
-      closed_set.add((cur_pos['x'],cur_pos['y']))
-      open_list[:] = [i for i in open_list if not (i['x'] == cur_pos['x'] and i['y'] == cur_pos['y'])] #remove current position from list               
+      cur_pos_tup = heapq.heappop(open_heap)
+      cur_pos = cur_pos_tup[1]
+      closed_set.add((cur_pos['x'],cur_pos['y']))              
       candidate_tuples = [(cur_pos['x'] + 1, cur_pos['y']), (cur_pos['x'] - 1, cur_pos['y']), (cur_pos['x'], cur_pos['y'] + 1), (cur_pos['x'], cur_pos['y'] - 1)]
       #validate the candidates.
       for i in candidate_tuples:
@@ -213,16 +221,7 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
             cand_pos['f'] = _f((cur_pos['x'], cur_pos['y']))
             cand_pos['g'] = _g((cur_pos['x'], cur_pos['y']))
             cand_pos['h'] = _h((cur_pos['x'], cur_pos['y']),cost_map)
-            open_list.append(cand_pos)
-      
-      if not open_list: #if we ever find that the open list is empty, that means there is no path from here to there, so we're just going to abort early
-        print("Could not find a valid path from ("+str(from_x)+","+str(from_y)+") to ("+str(to_x)+","+str(to_y)+").")
-        return return_dictionary
-        
-      
-      #now that we have open_list with all of the candidates, sort by f, then evaluate the top candidate on the list.
-      open_list = sorted(open_list, key=lambda k: k['f'])
-      cur_pos = open_list[0]
+            heapq.heappush(open_heap, (cand_pos['f'],cand_pos))      
       
       if(cur_pos['x'] ==  to_pos['x'] and cur_pos['y'] == to_pos['y']):
         done = True
@@ -235,7 +234,7 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
         print("closed:")
         print(closed_set)
         print("open:")
-        print(open_list)
+        print(open_heap)
         return []
       
   
@@ -250,12 +249,12 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
     return_open_and_closed_lists = True
     if return_open_and_closed_lists:
       #need to convert dictionary objects to list of tuples
-      open_list_tuples = []
-      for pos in open_list:
-        open_list_tuples.append((pos['x'],pos['y']))
+      open_heap_tuples = []
+      for pos in open_heap:
+        open_heap_tuples.append((pos[1]['x'],pos[1]['y']))
       closed_list_tuples = []
       for pos in closed_set:
         closed_list_tuples.append(pos)
-      return_dictionary['open'] = open_list_tuples
+      return_dictionary['open'] = open_heap_tuples
       return_dictionary['closed'] = closed_list_tuples
     return(return_dictionary)
