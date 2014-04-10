@@ -204,8 +204,7 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
       for i in candidate_tuples:
         if not is_valid_move(i[0],i[1],cost_map):
           candidate_tuples.remove(i)
-        else:
-          if i not in closed_set:
+        elif i not in closed_set:
             cand_pos = {}
             cand_pos['x'] = i[0]
             cand_pos['y'] = i[1]
