@@ -1,10 +1,10 @@
 import path_util as path
 import test_util as test
 
-my_cost_map = test.make_grid(300,300,1) #default cost of 1
+my_cost_map = test.make_grid(400,400,1) #default cost of 1
 #test.u_shaped_wall(my_cost_map)
 start_pos = [0,0]
-end_pos = [299,299]
+end_pos = [399,399]
 
 # my_cost_map[2][2] = 2
 #quick_list = [(3,3,3),(2,2,2),(1,1,1),(0,0,0),(-1,-1,9)]
