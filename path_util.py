@@ -189,7 +189,7 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
 
       
     open_list = []
-    closed_list = []
+    closed_set = set()
     candidate_list = []
     cur_pos = from_pos
     
@@ -197,21 +197,14 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
     safety = 0 #used to make sure we don't grow infinitely due to bug
     while not done:
       safety += 1
-      closed_list.append(cur_pos)
+      closed_set.add((cur_pos['x'],cur_pos['y']))
       open_list[:] = [i for i in open_list if not (i['x'] == cur_pos['x'] and i['y'] == cur_pos['y'])] #remove current position from list               
       candidate_tuples = [(cur_pos['x'] + 1, cur_pos['y']), (cur_pos['x'] - 1, cur_pos['y']), (cur_pos['x'], cur_pos['y'] + 1), (cur_pos['x'], cur_pos['y'] - 1)]
       #validate the candidates.
       for i in candidate_tuples:
         if not is_valid_move(i[0],i[1],cost_map):
           candidate_tuples.remove(i)
-        else:
-          in_closed_list = False
-          for closed in closed_list:
-            if (closed['x'] == i[0] and closed['y'] == i[1]):
-              in_closed_list = True
-              break
-      
-          if not in_closed_list:
+        elif i not in closed_set:
             cand_pos = {}
             cand_pos['x'] = i[0]
             cand_pos['y'] = i[1]
@@ -240,7 +233,7 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
         print("  to: ("+str(to_x)+","+str(to_y)+")")
         print(cur_pos)
         print("closed:")
-        print(closed_list)
+        print(closed_set)
         print("open:")
         print(open_list)
         return []
@@ -261,8 +254,8 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
       for pos in open_list:
         open_list_tuples.append((pos['x'],pos['y']))
       closed_list_tuples = []
-      for pos in closed_list:
-        closed_list_tuples.append((pos['x'],pos['y']))
+      for pos in closed_set:
+        closed_list_tuples.append(pos)
       return_dictionary['open'] = open_list_tuples
       return_dictionary['closed'] = closed_list_tuples
     return(return_dictionary)

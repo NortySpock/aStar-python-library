@@ -1,2 +1,1 @@
-closed_list could be changed to be a set
 look for other optimizations (python -m cProfile main.py)
