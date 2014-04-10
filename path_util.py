@@ -217,7 +217,6 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
             cand_pos['parent'] = cur_pos
             cand_pos['f'] = _f((cur_pos['x'], cur_pos['y']))
             cand_pos['g'] = _g((cur_pos['x'], cur_pos['y']))
-            cand_pos['h'] = _h((cur_pos['x'], cur_pos['y']),cost_map)
             heapq.heappush(open_heap, (cand_pos['f'],cand_pos))
       
       if(cur_pos['x'] ==  to_pos['x'] and cur_pos['y'] == to_pos['y']):
