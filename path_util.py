@@ -1,3 +1,4 @@
+from __future__ import print_function
 from random import randrange
 from copy import deepcopy
 import heapq
@@ -203,13 +204,25 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
       safety += 1
       cur_pos_tup = heapq.heappop(open_heap)
       cur_pos = cur_pos_tup[1]
-      closed_set.add((cur_pos['x'],cur_pos['y']))              
-      candidate_tuples = [(cur_pos['x'] + 1, cur_pos['y']), (cur_pos['x'] - 1, cur_pos['y']), (cur_pos['x'], cur_pos['y'] + 1), (cur_pos['x'], cur_pos['y'] - 1)]
-      #validate the candidates.
-      for i in candidate_tuples:
-        if not is_valid_move(i[0],i[1],cost_map):
-          candidate_tuples.remove(i)
-        elif i not in closed_set:
+      print("iteration:",safety)
+      print("len closed_set:",len(closed_set))
+      print("cur_pos in closed_set:", (cur_pos['x'],cur_pos['y']) in closed_set)
+      #print(closed_set)
+      closed_set.add((cur_pos['x'],cur_pos['y']))
+      
+      
+
+      
+      print("heap size:", len(open_heap))
+      print("cur_pos:",(cur_pos['x'],cur_pos['y']),", score:",cur_pos['f'])
+      
+      if(cur_pos['x'] ==  to_pos['x'] and cur_pos['y'] == to_pos['y']):
+        done = True
+      else:                  
+        candidate_tuples = [(cur_pos['x'] + 1, cur_pos['y']), (cur_pos['x'] - 1, cur_pos['y']), (cur_pos['x'], cur_pos['y'] + 1), (cur_pos['x'], cur_pos['y'] - 1)]
+        #validate the candidates.
+        for i in candidate_tuples:          
+          if is_valid_move(i[0],i[1],cost_map) and i not in closed_set:
             cand_pos = {}
             cand_pos['x'] = i[0]
             cand_pos['y'] = i[1]
@@ -217,11 +230,11 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
             cand_pos['parent'] = cur_pos
             cand_pos['f'] = _f((cur_pos['x'], cur_pos['y']))
             cand_pos['g'] = _g((cur_pos['x'], cur_pos['y']))
+            print("cand:",i,", score:",cand_pos['f'])
             heapq.heappush(open_heap, (cand_pos['f'],cand_pos))
       
-      if(cur_pos['x'] ==  to_pos['x'] and cur_pos['y'] == to_pos['y']):
-        done = True
-      if(safety > (number_of_tiles_on_rectangular_map(cost_map))): #If we've gone more iterations than there are squares on the map, we must be lost
+
+      if(safety > (2*number_of_tiles_on_rectangular_map(cost_map))): #If we've gone more than double the iterations as there are squares on the map, we must be lost
         done = True
         print("Hit the safety")
         print("from: ("+str(from_x)+","+str(from_y)+")")
