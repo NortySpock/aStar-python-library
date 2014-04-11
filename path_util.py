@@ -15,8 +15,6 @@ def is_inside_map(x,y,cost_map):
     return False
     
 def is_valid_move(x,y,cost_map):
-  max_x = len(cost_map)
-  max_y = len(cost_map[0])
   if(is_inside_map(x,y,cost_map) and cost_map[x][y] != -1):
     return True
   else:
@@ -181,11 +179,6 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
     to_pos['parent'] = None
     to_pos['f'] = _f((to_pos['x'], to_pos['y']))
     
-
-    
-
-      
-
       
     open_heap = []
     closed_set = set()
@@ -197,7 +190,7 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
     heapq.heappush(open_heap, (from_pos['f'],from_pos))
     while not done:
       
-      if not open_heap: #if we ever find that the open list is empty, that means there is no path from here to there, so we're just going to abort early
+      if not open_heap: #if we ever find that the open list is empty, that means there is no path from here to there, so we're just going to abort
         print("Could not find a valid path from ("+str(from_x)+","+str(from_y)+") to ("+str(to_x)+","+str(to_y)+").")
         return return_dictionary
       
@@ -207,11 +200,9 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
       print("iteration:",safety)
       print("len closed_set:",len(closed_set))
       print("cur_pos in closed_set:", (cur_pos['x'],cur_pos['y']) in closed_set)
-      #print(closed_set)
+      print(closed_set)
       closed_set.add((cur_pos['x'],cur_pos['y']))
       
-      
-
       
       print("heap size:", len(open_heap))
       print("cur_pos:",(cur_pos['x'],cur_pos['y']),", score:",cur_pos['f'])
@@ -221,7 +212,7 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
       else:                  
         candidate_tuples = [(cur_pos['x'] + 1, cur_pos['y']), (cur_pos['x'] - 1, cur_pos['y']), (cur_pos['x'], cur_pos['y'] + 1), (cur_pos['x'], cur_pos['y'] - 1)]
         #validate the candidates.
-        for i in candidate_tuples:          
+        for i in candidate_tuples:
           if is_valid_move(i[0],i[1],cost_map) and i not in closed_set:
             cand_pos = {}
             cand_pos['x'] = i[0]
@@ -229,7 +220,6 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
             cand_pos['tilecost'] = cost_map[cand_pos['x']][cand_pos['y']]
             cand_pos['parent'] = cur_pos
             cand_pos['f'] = _f((cur_pos['x'], cur_pos['y']))
-            cand_pos['g'] = _g((cur_pos['x'], cur_pos['y']))
             print("cand:",i,", score:",cand_pos['f'])
             heapq.heappush(open_heap, (cand_pos['f'],cand_pos))
       
