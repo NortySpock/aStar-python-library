@@ -195,12 +195,17 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
         return return_dictionary
       
       safety += 1
+      
       cur_pos_tup = heapq.heappop(open_heap)
       cur_pos = cur_pos_tup[1]
+      
+      print(" ")
+      print(" ")
       print("iteration:",safety)
       print("len closed_set:",len(closed_set))
       print("cur_pos in closed_set:", (cur_pos['x'],cur_pos['y']) in closed_set)
-      print(closed_set)
+      print("closed_set:", closed_set)
+      print("open_heap (short):", print_open_heap(open_heap))
       closed_set.add((cur_pos['x'],cur_pos['y']))
       
       
@@ -213,13 +218,13 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
         candidate_tuples = [(cur_pos['x'] + 1, cur_pos['y']), (cur_pos['x'] - 1, cur_pos['y']), (cur_pos['x'], cur_pos['y'] + 1), (cur_pos['x'], cur_pos['y'] - 1)]
         #validate the candidates.
         for i in candidate_tuples:
-          if is_valid_move(i[0],i[1],cost_map) and i not in closed_set:
+          if is_valid_move(i[0],i[1],cost_map) and not (i in closed_set):
             cand_pos = {}
             cand_pos['x'] = i[0]
             cand_pos['y'] = i[1]
             cand_pos['tilecost'] = cost_map[cand_pos['x']][cand_pos['y']]
             cand_pos['parent'] = cur_pos
-            cand_pos['f'] = _f((cur_pos['x'], cur_pos['y']))
+            cand_pos['f'] = _f((i[0], i[1]))
             print("cand:",i,", score:",cand_pos['f'])
             heapq.heappush(open_heap, (cand_pos['f'],cand_pos))
       
@@ -257,3 +262,9 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
       return_dictionary['open'] = open_heap_tuples
       return_dictionary['closed'] = closed_list_tuples
     return(return_dictionary)
+
+def print_open_heap(heap_in):
+  current_heap_positions = []
+  for i in heap_in:
+    current_heap_positions.append((i[1]['x'], i[1]['y'], i[1]['f']))
+  return str(current_heap_positions)
