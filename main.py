@@ -1,18 +1,18 @@
 import path_util as path
 import test_util as test
 
-my_cost_map = test.make_grid(5,5,1) #default cost of 1
+my_cost_map = test.make_grid(40,20,1) #default cost of 1
 
 #start_pos = [2,4]
 #end_pos = [2,0]
 
-start_pos = [2,0]
-end_pos = [2,4]
+start_pos = [10,0]
+end_pos = [10,19]
 
 my_cost_map[2][2] = -1
 #quick_list = [(3,3,3),(2,2,2),(1,1,1),(0,0,0),(-1,-1,9)]
 #path.apply_list_of_tuples_to_cost_map(quick_list,my_cost_map)
-#test.u_shaped_wall(my_cost_map)
+test.u_shaped_wall(my_cost_map)
 
 my_text_map = test.create_text_map_from_cost_map(my_cost_map)
 my_text_map[start_pos[0]][start_pos[1]] = 'A'

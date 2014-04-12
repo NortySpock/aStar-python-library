@@ -13,7 +13,7 @@ def is_inside_map(x,y,cost_map):
     return True
   else:
     return False
-    
+
 def is_valid_move(x,y,cost_map):
   if(is_inside_map(x,y,cost_map) and cost_map[x][y] != -1):
     return True
@@ -26,36 +26,36 @@ def apply_tuple_to_cost_map(tup,cost_map):
   if(is_inside_map(tup[0],tup[1],cost_map)):
     cost_map[tup[0]][tup[1]] = tup[2]
   else: print("Cannot apply tuple at ("+str(tup[0])+","+str(tup[1])+")")
-  
+
 def apply_list_of_tuples_to_cost_map(list_in,cost_map):
   for i in list_in:
     apply_tuple_to_cost_map(i,cost_map)
-  
-  
-    
+
+
+
 def number_of_tiles_on_rectangular_map(map_in):
   return (len(map_in)*len(map_in[0]))
-  
 
-# returns a list of xy tuples that are a path from here to there  
+
+# returns a list of xy tuples that are a path from here to there
 #this does not take into account obstacles
 def naive_path(from_x,from_y,to_x,to_y):
-        
+
     the_path = []
     from_pos = [from_x, from_y]
     to_pos = [to_x,to_y]
     curr_pos = from_pos
     done = False
-    
+
     #idiot check
     if curr_pos == to_pos:
       done = True
-    
+
     while not done:
       #calculate rise over run delta:
       run_delta = abs(curr_pos[0] - to_pos[0])
       rise_delta = abs(curr_pos[1] - to_pos[1])
-      
+
       if(rise_delta > run_delta): #move vertically
       #(0,0) is top left, (40,20) is bottom right
         if (curr_pos[1] < to_pos[1]): #above target, move down
@@ -68,12 +68,12 @@ def naive_path(from_x,from_y,to_x,to_y):
         else: # right of target, move left
           curr_pos[0] = curr_pos[0] - 1
       the_path.append((curr_pos[0], curr_pos[1]))
-      
+
       if curr_pos == to_pos:
         done = True
-      
+
     return the_path
-  
+
 def random_detour_path(from_x,from_y,to_x,to_y, cost_map):
     the_path = []
     from_pos = [from_x, from_y]
@@ -83,17 +83,17 @@ def random_detour_path(from_x,from_y,to_x,to_y, cost_map):
     done = False
     random_move_counter = 0
     max_random_moves = 10
-    
+
     #idiot check
     if curr_pos == to_pos:
       done = True
-    
+
     while not done:
       #calculate rise over run delta:
       run_delta = abs(curr_pos[0] - to_pos[0])
       rise_delta = abs(curr_pos[1] - to_pos[1])
       move_pos = deepcopy(curr_pos) #default to no move.
-            
+
       if(rise_delta > run_delta): #move vertically
       #(0,0) is top left, (40,20) is bottom right
         if (curr_pos[1] < to_pos[1]): #above target, move down
@@ -105,7 +105,7 @@ def random_detour_path(from_x,from_y,to_x,to_y, cost_map):
           move_pos[0]  = curr_pos[0] + 1
         else: # right of target, move left
           move_pos[0] = curr_pos[0] - 1
-      
+
       while not is_valid_move(move_pos[0], move_pos[1], cost_map) and not done:
         random_move_counter += 1
         print("Suggested move ("+str(move_pos[0])+","+str(move_pos[1])+") found invalid, moving randomly for the "+str(random_move_counter)+"th time.")
@@ -123,16 +123,16 @@ def random_detour_path(from_x,from_y,to_x,to_y, cost_map):
             move_pos[1] += 1
           elif direction == 3: #west
             move_pos[0] -= 1
-      
-      if (move_pos != curr_pos): #we actually moved  
+
+      if (move_pos != curr_pos): #we actually moved
         the_path.append((move_pos[0], move_pos[1]))
 
       curr_pos = move_pos #update curr_pos
       if curr_pos == to_pos:
         done = True
-      
+
     return the_path
-    
+
 def create_manhattan_adjacent_positions(pos_x,pos_y):
   pos_list = []
   pos_list.append([pos_x,pos_y-1]) #north
@@ -153,68 +153,56 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
 
     def _f(i):
       return (_g(i) + _h(i, cost_map))
-    
+
     def _g(i):
       return manhattan_distance(i[0], i[1], from_x, from_y)
-    
+
     def _h(i, cost_map):
       tile_cost = cost_map[i[0]][i[1]]
-      #calculate the cross product for two vectors -- one straight from start to goal and one from curr_pos position. 
+      #calculate the cross product for two vectors -- one straight from start to goal and one from curr_pos position.
       #Slightly penalize deviation from "as the crow flies" to focus the search on empty maps.
       cross_prod = abs((i[0]-to_x)*(from_y-to_y) - (from_x-to_x)*(i[1]-to_y))
       divergence_factor = (cross_prod * (1.0/number_of_tiles_on_rectangular_map(cost_map)))
       return ((manhattan_distance(i[0], i[1], to_x, to_y) + tile_cost + divergence_factor))
-                 
+
     from_pos = {}
     from_pos['x'] = from_x
     from_pos['y'] = from_y
     from_pos['tilecost'] = cost_map[from_pos['x']][from_pos['y']]
     from_pos['parent'] = None
     from_pos['f'] = _f((from_pos['x'], from_pos['y']))
-    
+
     to_pos = {}
     to_pos['x'] = to_x
     to_pos['y'] = to_y
     to_pos['tilecost'] = cost_map[to_pos['x']][to_pos['y']]
     to_pos['parent'] = None
     to_pos['f'] = _f((to_pos['x'], to_pos['y']))
-    
-      
+
+
     open_heap = []
     closed_set = set()
     candidate_list = []
     cur_pos = from_pos
-    
+
     done = False
     safety = 0 #used to make sure we don't grow infinitely due to bug
     heapq.heappush(open_heap, (from_pos['f'],from_pos))
     while not done:
-      
+
       if not open_heap: #if we ever find that the open list is empty, that means there is no path from here to there, so we're just going to abort
         print("Could not find a valid path from ("+str(from_x)+","+str(from_y)+") to ("+str(to_x)+","+str(to_y)+").")
         return return_dictionary
-      
+
       safety += 1
-      
+
       cur_pos_tup = heapq.heappop(open_heap)
       cur_pos = cur_pos_tup[1]
-      
-      print(" ")
-      print(" ")
-      print("iteration:",safety)
-      print("len closed_set:",len(closed_set))
-      print("cur_pos in closed_set:", (cur_pos['x'],cur_pos['y']) in closed_set)
-      print("closed_set:", closed_set)
-      print("open_heap (short):", print_open_heap(open_heap))
       closed_set.add((cur_pos['x'],cur_pos['y']))
-      
-      
-      print("heap size:", len(open_heap))
-      print("cur_pos:",(cur_pos['x'],cur_pos['y']),", score:",cur_pos['f'])
-      
+
       if(cur_pos['x'] ==  to_pos['x'] and cur_pos['y'] == to_pos['y']):
         done = True
-      else:                  
+      else:
         candidate_tuples = [(cur_pos['x'] + 1, cur_pos['y']), (cur_pos['x'] - 1, cur_pos['y']), (cur_pos['x'], cur_pos['y'] + 1), (cur_pos['x'], cur_pos['y'] - 1)]
         #validate the candidates.
         for i in candidate_tuples:
@@ -225,9 +213,8 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
             cand_pos['tilecost'] = cost_map[cand_pos['x']][cand_pos['y']]
             cand_pos['parent'] = cur_pos
             cand_pos['f'] = _f((i[0], i[1]))
-            print("cand:",i,", score:",cand_pos['f'])
             heapq.heappush(open_heap, (cand_pos['f'],cand_pos))
-      
+
 
       if(safety > (2*number_of_tiles_on_rectangular_map(cost_map))): #If we've gone more than double the iterations as there are squares on the map, we must be lost
         done = True
@@ -240,8 +227,8 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
         print("open:")
         print(open_heap)
         return []
-      
-  
+
+
     #so then we have a path, write it back out to the path list
     the_path = []
     while cur_pos['parent'] is not None:
@@ -249,7 +236,7 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
       cur_pos = cur_pos['parent']
     the_path.reverse()
     return_dictionary['path'] = the_path
-    
+
     return_open_and_closed_lists = True
     if return_open_and_closed_lists:
       #need to convert dictionary objects to list of tuples
