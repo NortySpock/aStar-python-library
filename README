@@ -5,3 +5,5 @@ To get started, run main.py and it should print out a map with an attempt to fin
 The path_util.py file contains a collection of functions that make up some pathfinding tools. It's not well organized yet.
 
 The test_util.py file contains functions that support the testing of the pathfinding tools -- things like generating a random map or printing out the map with the selected path on it.
+
+Python 2.7 is used because MegaMinerAI uses Python 2.7 (mostly due to Twisted being on 2.7). Indentation is non-standard because it mimics the coding style of AI.py in the client for the MegaMinerAI tournament.
