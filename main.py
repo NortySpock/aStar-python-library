@@ -9,9 +9,9 @@ end_pos = [10,10]
 # end_pos = [10,19]
 
 # my_cost_map[2][2] = -1
-#quick_list = [(3,3,3),(2,2,2),(1,1,1),(0,0,0),(-1,-1,9)]
-#path.apply_list_of_tuples_to_cost_map(quick_list,my_cost_map)
-path.u_shaped_wall(my_cost_map)
+quick_list = [(11,10,-1),(9,10,-1),(10,11,-1),(10,9,-1)]
+path.apply_list_of_tuples_to_cost_map(quick_list,my_cost_map)
+# path.u_shaped_wall(my_cost_map)
 
 my_text_map = path.create_text_map_from_cost_map(my_cost_map)
 my_text_map[start_pos[0]][start_pos[1]] = 'A'

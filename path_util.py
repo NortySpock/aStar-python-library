@@ -216,7 +216,7 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
             heapq.heappush(open_heap, (cand_pos['f'],cand_pos))
 
 
-      if(safety > (2*number_of_tiles_on_rectangular_map(cost_map))): #If we've gone more than double the iterations as there are squares on the map, we must be lost
+      if(safety > (number_of_tiles_on_rectangular_map(cost_map))): #If we've gone more iterations than there are squares on the map, we must be lost
         done = True
         print("Hit the safety")
         print("from: ("+str(from_x)+","+str(from_y)+")")
