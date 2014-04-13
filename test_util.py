@@ -1,3 +1,4 @@
+from __future__ import print_function
 from random import randrange
 from copy import deepcopy
 from path_util import is_valid_move
@@ -144,3 +145,4 @@ def unbreachable_wall(cost_map):
   map_len = len(cost_map)
   for i in range(0,map_len-1):
     cost_map[i][15] = -1
+    
