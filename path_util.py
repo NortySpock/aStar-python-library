@@ -1,6 +1,7 @@
 from __future__ import print_function
 from random import randrange
 from copy import deepcopy
+from math import floor
 import heapq
 
 def manhattan_distance(x1, y1, x2, y2):
@@ -211,14 +212,10 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
       return return_dictionary
 
     safety += 1
-    print(" ")
-    print(" ")
-    print("iteration:"+str(safety))
 
     cur_pos_tup = heapq.heappop(open_heap)
     cur_pos = cur_pos_tup[1]
-    print("cur_pos:",str((cur_pos['x'],cur_pos['y'])))
-    print("closed: len(", len(closed_set),"):",closed_set)
+
     closed_set.add((cur_pos['x'],cur_pos['y']))
     if open_set:
       open_set.remove((cur_pos['x'],cur_pos['y']))
@@ -239,7 +236,6 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
           open_set.add((i[0], i[1]))
           heapq.heappush(open_heap, (cand_pos['f'],cand_pos))
       
-      print("open_heap:len(", len(open_heap),"):", print_open_heap(open_heap))
 
 
     if(safety > (number_of_tiles_on_rectangular_map(cost_map))): #If we've gone more iterations than there are squares on the map, we must be lost
@@ -440,4 +436,20 @@ def print_open_heap(heap_in):
   for i in heap_in:
     current_heap_positions.append((i[1]['x'], i[1]['y'], i[1]['f']))
   return str(current_heap_positions)
+
+def two_walls(cost_map):
+  map_width = len(cost_map)
+  map_height = len(cost_map[0])
+  
+  one_third_width = int((1.0/3.0) * map_width)
+  two_thirds_width = int((2.0/3.0) * map_width)
+  
+  one_third_height = int((1.0/3.0) * map_height)
+  two_thirds_height = int((2.0/3.0) * map_height)
+  
+  for i in xrange(0, two_thirds_height):
+    cost_map[one_third_width][i] = -1
+  
+  for i in xrange(one_third_height, map_height):
+    cost_map[two_thirds_width][i] = -1
 
