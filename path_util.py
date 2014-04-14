@@ -143,149 +143,149 @@ def create_manhattan_adjacent_positions(pos_x,pos_y):
 
 def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
 
-    # boilerplate setup so if we have to bail out early for
-    # any number of reasons it doesn't break downstream
-    return_dictionary = {}
-    return_dictionary['path'] = []
-    return_dictionary['open'] = []
-    return_dictionary['closed'] = []
+  # boilerplate setup so if we have to bail out early for
+  # any number of reasons it doesn't break downstream
+  return_dictionary = {}
+  return_dictionary['path'] = []
+  return_dictionary['open'] = []
+  return_dictionary['closed'] = []
+  
+  
+  #if we're pathing to same position or are out of bounds, bail out
+  if (from_x == to_x and from_y == to_y) \
+    or not is_inside_map(from_x,from_y,cost_map) \
+    or not is_inside_map(to_x,to_y,cost_map):
+    return return_dictionary
+
     
-    
-    #if we're pathing to same position or are out of bounds, bail out
-    if (from_x == to_x and from_y == to_y) \
-      or not is_inside_map(from_x,from_y,cost_map) \
-      or not is_inside_map(to_x,to_y,cost_map):
+  # When you're trying to path to be adjacent to an object that is 
+  # immobile, it's really annoying to have the object be considered
+  # unreachable because the final position is "blocked". 
+  #
+  # So we're just going to assume the target position is reachable. 
+  # Determining if you want to be adjacent to or on-top-of the target
+  # is left as an exercise for the developer.
+  cost_map[to_x][to_y] = 1
+
+  def _f(i):
+    return (_g(i) + _h(i, cost_map))
+
+  def _g(i):
+    return manhattan_distance(i[0], i[1], from_x, from_y)
+
+  def _h(i, cost_map):
+    tile_cost = cost_map[i[0]][i[1]]
+    #calculate the cross product for two vectors -- one straight from start to goal and one from curr_pos position.
+    #Slightly penalize deviation from "as the crow flies" to focus the search on empty maps.
+    cross_prod = abs((i[0]-to_x)*(from_y-to_y) - (from_x-to_x)*(i[1]-to_y))
+    divergence_factor = (cross_prod * (1.0/number_of_tiles_on_rectangular_map(cost_map)))
+    return ((manhattan_distance(i[0], i[1], to_x, to_y) + tile_cost + divergence_factor))
+
+  from_pos = {}
+  from_pos['x'] = from_x
+  from_pos['y'] = from_y
+  from_pos['tilecost'] = cost_map[from_pos['x']][from_pos['y']]
+  from_pos['parent'] = None
+  from_pos['f'] = _f((from_pos['x'], from_pos['y']))
+
+  to_pos = {}
+  to_pos['x'] = to_x
+  to_pos['y'] = to_y
+  to_pos['tilecost'] = cost_map[to_pos['x']][to_pos['y']]
+  to_pos['parent'] = None
+  to_pos['f'] = _f((to_pos['x'], to_pos['y']))
+
+
+  open_heap = []
+  closed_set = set()
+  open_set = set()
+  candidate_list = []
+  cur_pos = from_pos
+
+  done = False
+  safety = 0 #counter to make sure we don't grow infinitely due to bug
+  heapq.heappush(open_heap, (from_pos['f'],from_pos))
+  while not done:
+    if not open_heap: #if we ever find that the open list is empty, that means there is no path from here to there, so we're just going to abort
+      print("Could not find a valid path from ("+str(from_x)+","+str(from_y)+") to ("+str(to_x)+","+str(to_y)+").")
       return return_dictionary
 
+    safety += 1
+    print(" ")
+    print(" ")
+    print("iteration:"+str(safety))
+
+    cur_pos_tup = heapq.heappop(open_heap)
+    cur_pos = cur_pos_tup[1]
+    print("cur_pos:",str((cur_pos['x'],cur_pos['y'])))
+    print("closed: len(", len(closed_set),"):",closed_set)
+    closed_set.add((cur_pos['x'],cur_pos['y']))
+    if open_set:
+      open_set.remove((cur_pos['x'],cur_pos['y']))
+    
+    if(cur_pos['x'] ==  to_pos['x'] and cur_pos['y'] == to_pos['y']):
+      done = True
+    else:
+      candidate_tuples = [(cur_pos['x'] + 1, cur_pos['y']), (cur_pos['x'] - 1, cur_pos['y']), (cur_pos['x'], cur_pos['y'] + 1), (cur_pos['x'], cur_pos['y'] - 1)]
+      #validate the candidates.
+      for i in candidate_tuples:
+        if is_valid_move(i[0],i[1],cost_map) and not (i in closed_set) and not (i in open_set):
+          cand_pos = {}
+          cand_pos['x'] = i[0]
+          cand_pos['y'] = i[1]
+          cand_pos['tilecost'] = cost_map[cand_pos['x']][cand_pos['y']]
+          cand_pos['parent'] = cur_pos
+          cand_pos['f'] = _f((i[0], i[1]))
+          open_set.add((i[0], i[1]))
+          heapq.heappush(open_heap, (cand_pos['f'],cand_pos))
       
-    # When you're trying to path to be adjacent to an object that is 
-    # immobile, it's really annoying to have the object be considered
-    # unreachable because the final position is "blocked". 
-    #
-    # So we're just going to assume the target position is reachable. 
-    # Determining if you want to be adjacent to or on-top-of the target
-    # is left as an exercise for the developer.
-    cost_map[to_x][to_y] = 1
-
-    def _f(i):
-      return (_g(i) + _h(i, cost_map))
-
-    def _g(i):
-      return manhattan_distance(i[0], i[1], from_x, from_y)
-
-    def _h(i, cost_map):
-      tile_cost = cost_map[i[0]][i[1]]
-      #calculate the cross product for two vectors -- one straight from start to goal and one from curr_pos position.
-      #Slightly penalize deviation from "as the crow flies" to focus the search on empty maps.
-      cross_prod = abs((i[0]-to_x)*(from_y-to_y) - (from_x-to_x)*(i[1]-to_y))
-      divergence_factor = (cross_prod * (1.0/number_of_tiles_on_rectangular_map(cost_map)))
-      return ((manhattan_distance(i[0], i[1], to_x, to_y) + tile_cost + divergence_factor))
-
-    from_pos = {}
-    from_pos['x'] = from_x
-    from_pos['y'] = from_y
-    from_pos['tilecost'] = cost_map[from_pos['x']][from_pos['y']]
-    from_pos['parent'] = None
-    from_pos['f'] = _f((from_pos['x'], from_pos['y']))
-
-    to_pos = {}
-    to_pos['x'] = to_x
-    to_pos['y'] = to_y
-    to_pos['tilecost'] = cost_map[to_pos['x']][to_pos['y']]
-    to_pos['parent'] = None
-    to_pos['f'] = _f((to_pos['x'], to_pos['y']))
+      print("open_heap:len(", len(open_heap),"):", print_open_heap(open_heap))
 
 
-    open_heap = []
-    closed_set = set()
-    open_set = set()
-    candidate_list = []
-    cur_pos = from_pos
-
-    done = False
-    safety = 0 #counter to make sure we don't grow infinitely due to bug
-    heapq.heappush(open_heap, (from_pos['f'],from_pos))
-    while not done:
-      if not open_heap: #if we ever find that the open list is empty, that means there is no path from here to there, so we're just going to abort
-        print("Could not find a valid path from ("+str(from_x)+","+str(from_y)+") to ("+str(to_x)+","+str(to_y)+").")
-        return return_dictionary
-
-      safety += 1
-      print(" ")
-      print(" ")
-      print("iteration:"+str(safety))
-
-      cur_pos_tup = heapq.heappop(open_heap)
-      cur_pos = cur_pos_tup[1]
-      print("cur_pos:",str((cur_pos['x'],cur_pos['y'])))
+    if(safety > (number_of_tiles_on_rectangular_map(cost_map))): #If we've gone more iterations than there are squares on the map, we must be lost
+      done = True
+      print("Hit the safety")
+      print("from: ("+str(from_x)+","+str(from_y)+")")
+      print("  to: ("+str(to_x)+","+str(to_y)+")")
+      print(cur_pos)
       print("closed: len(", len(closed_set),"):",closed_set)
-      closed_set.add((cur_pos['x'],cur_pos['y']))
-      if open_set:
-        open_set.remove((cur_pos['x'],cur_pos['y']))
-      
-      if(cur_pos['x'] ==  to_pos['x'] and cur_pos['y'] == to_pos['y']):
-        done = True
-      else:
-        candidate_tuples = [(cur_pos['x'] + 1, cur_pos['y']), (cur_pos['x'] - 1, cur_pos['y']), (cur_pos['x'], cur_pos['y'] + 1), (cur_pos['x'], cur_pos['y'] - 1)]
-        #validate the candidates.
-        for i in candidate_tuples:
-          if is_valid_move(i[0],i[1],cost_map) and not (i in closed_set) and not (i in open_set):
-            cand_pos = {}
-            cand_pos['x'] = i[0]
-            cand_pos['y'] = i[1]
-            cand_pos['tilecost'] = cost_map[cand_pos['x']][cand_pos['y']]
-            cand_pos['parent'] = cur_pos
-            cand_pos['f'] = _f((i[0], i[1]))
-            open_set.add((i[0], i[1]))
-            heapq.heappush(open_heap, (cand_pos['f'],cand_pos))
-        
-        print("open_heap:len(", len(open_heap),"):", print_open_heap(open_heap))
-
-
-      if(safety > (number_of_tiles_on_rectangular_map(cost_map))): #If we've gone more iterations than there are squares on the map, we must be lost
-        done = True
-        print("Hit the safety")
-        print("from: ("+str(from_x)+","+str(from_y)+")")
-        print("  to: ("+str(to_x)+","+str(to_y)+")")
-        print(cur_pos)
-        print("closed: len(", len(closed_set),"):",closed_set)
-        print("open_heap:len(", len(open_heap),"):", print_open_heap(open_heap))
-        pretty_print_map(create_text_map_from_cost_map(cost_map))
-        my_text_map = create_text_map_from_cost_map(cost_map)
-        open_heap_tuples = []
-        for pos in open_heap:
-          open_heap_tuples.append((pos[1]['x'],pos[1]['y']))
-        closed_list_tuples = []
-        for pos in closed_set:
-          closed_list_tuples.append(pos)
-        print_list_of_tuples_on_map(open_heap_tuples, '~',my_text_map)
-        print_list_of_tuples_on_map(closed_list_tuples, '.',my_text_map)
-        my_text_map[from_x][from_y] = 'A'
-        my_text_map[to_x][to_y] = 'B'
-        pretty_print_map(my_text_map)
-        # return return_dictionary
-
-
-    #so then we have a path, write it back out to the path list
-    the_path = []
-    while cur_pos['parent'] is not None:
-      the_path.append((cur_pos['x'],cur_pos['y']))
-      cur_pos = cur_pos['parent']
-    the_path.reverse()
-    return_dictionary['path'] = the_path
-
-    return_open_and_closed_lists = True
-    if return_open_and_closed_lists:
-      #need to convert dictionary objects to list of tuples
+      print("open_heap:len(", len(open_heap),"):", print_open_heap(open_heap))
+      pretty_print_map(create_text_map_from_cost_map(cost_map))
+      my_text_map = create_text_map_from_cost_map(cost_map)
       open_heap_tuples = []
       for pos in open_heap:
         open_heap_tuples.append((pos[1]['x'],pos[1]['y']))
       closed_list_tuples = []
       for pos in closed_set:
         closed_list_tuples.append(pos)
-      return_dictionary['open'] = open_heap_tuples
-      return_dictionary['closed'] = closed_list_tuples
-    return(return_dictionary)
+      print_list_of_tuples_on_map(open_heap_tuples, '~',my_text_map)
+      print_list_of_tuples_on_map(closed_list_tuples, '.',my_text_map)
+      my_text_map[from_x][from_y] = 'A'
+      my_text_map[to_x][to_y] = 'B'
+      pretty_print_map(my_text_map)
+      # return return_dictionary
+
+
+  #so then we have a path, write it back out to the path list
+  the_path = []
+  while cur_pos['parent'] is not None:
+    the_path.append((cur_pos['x'],cur_pos['y']))
+    cur_pos = cur_pos['parent']
+  the_path.reverse()
+  return_dictionary['path'] = the_path
+
+  return_open_and_closed_lists = True
+  if return_open_and_closed_lists:
+    #need to convert dictionary objects to list of tuples
+    open_heap_tuples = []
+    for pos in open_heap:
+      open_heap_tuples.append((pos[1]['x'],pos[1]['y']))
+    closed_list_tuples = []
+    for pos in closed_set:
+      closed_list_tuples.append(pos)
+    return_dictionary['open'] = open_heap_tuples
+    return_dictionary['closed'] = closed_list_tuples
+  return(return_dictionary)
 
 def print_open_heap(heap_in):
   current_heap_positions = []
