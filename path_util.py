@@ -142,16 +142,30 @@ def create_manhattan_adjacent_positions(pos_x,pos_y):
   return pos_list
 
 def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
+
+    # boilerplate setup so if we have to bail out early for
+    # any number of reasons it doesn't break downstream
     return_dictionary = {}
     return_dictionary['path'] = []
     return_dictionary['open'] = []
     return_dictionary['closed'] = []
-    if from_x == to_x and from_y == to_y: #if we're looking at the same thing, bail out
+    
+    
+    #if we're pathing to same position or are out of bounds, bail out
+    if (from_x == to_x and from_y == to_y) \
+      or not is_inside_map(from_x,from_y,cost_map) \
+      or not is_inside_map(to_x,to_y,cost_map):
       return return_dictionary
-    if not is_inside_map(from_x,from_y,cost_map):
-      return return_dictionary
-    if not is_inside_map(to_x,to_y,cost_map):
-      return return_dictionary
+
+      
+    # When you're trying to path to be adjacent to an object that is 
+    # immobile, it's really annoying to have the object be considered
+    # unreachable because the final position is "blocked". 
+    #
+    # So we're just going to assume the target position is reachable. 
+    # Determining if you want to be adjacent to or on-top-of the target
+    # is left as an exercise for the developer.
+    cost_map[to_x][to_y] = 1
 
     def _f(i):
       return (_g(i) + _h(i, cost_map))
@@ -189,7 +203,7 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
     cur_pos = from_pos
 
     done = False
-    safety = 0 #used to make sure we don't grow infinitely due to bug
+    safety = 0 #counter to make sure we don't grow infinitely due to bug
     heapq.heappush(open_heap, (from_pos['f'],from_pos))
     while not done:
       if not open_heap: #if we ever find that the open list is empty, that means there is no path from here to there, so we're just going to abort
