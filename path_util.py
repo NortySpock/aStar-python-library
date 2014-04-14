@@ -144,6 +144,8 @@ def create_manhattan_adjacent_positions(pos_x,pos_y):
 def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
     return_dictionary = {}
     return_dictionary['path'] = []
+    return_dictionary['open'] = []
+    return_dictionary['closed'] = []
     if from_x == to_x and from_y == to_y: #if we're looking at the same thing, bail out
       return return_dictionary
     if not is_inside_map(from_x,from_y,cost_map):
@@ -182,6 +184,7 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
 
     open_heap = []
     closed_set = set()
+    open_set = set()
     candidate_list = []
     cur_pos = from_pos
 
@@ -189,31 +192,40 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
     safety = 0 #used to make sure we don't grow infinitely due to bug
     heapq.heappush(open_heap, (from_pos['f'],from_pos))
     while not done:
-
       if not open_heap: #if we ever find that the open list is empty, that means there is no path from here to there, so we're just going to abort
         print("Could not find a valid path from ("+str(from_x)+","+str(from_y)+") to ("+str(to_x)+","+str(to_y)+").")
         return return_dictionary
 
       safety += 1
+      print(" ")
+      print(" ")
+      print("iteration:"+str(safety))
 
       cur_pos_tup = heapq.heappop(open_heap)
       cur_pos = cur_pos_tup[1]
+      print("cur_pos:",str((cur_pos['x'],cur_pos['y'])))
+      print("closed: len(", len(closed_set),"):",closed_set)
       closed_set.add((cur_pos['x'],cur_pos['y']))
-
+      if open_set:
+        open_set.remove((cur_pos['x'],cur_pos['y']))
+      
       if(cur_pos['x'] ==  to_pos['x'] and cur_pos['y'] == to_pos['y']):
         done = True
       else:
         candidate_tuples = [(cur_pos['x'] + 1, cur_pos['y']), (cur_pos['x'] - 1, cur_pos['y']), (cur_pos['x'], cur_pos['y'] + 1), (cur_pos['x'], cur_pos['y'] - 1)]
         #validate the candidates.
         for i in candidate_tuples:
-          if is_valid_move(i[0],i[1],cost_map) and not (i in closed_set):
+          if is_valid_move(i[0],i[1],cost_map) and not (i in closed_set) and not (i in open_set):
             cand_pos = {}
             cand_pos['x'] = i[0]
             cand_pos['y'] = i[1]
             cand_pos['tilecost'] = cost_map[cand_pos['x']][cand_pos['y']]
             cand_pos['parent'] = cur_pos
             cand_pos['f'] = _f((i[0], i[1]))
+            open_set.add((i[0], i[1]))
             heapq.heappush(open_heap, (cand_pos['f'],cand_pos))
+        
+        print("open_heap:len(", len(open_heap),"):", print_open_heap(open_heap))
 
 
       if(safety > (number_of_tiles_on_rectangular_map(cost_map))): #If we've gone more iterations than there are squares on the map, we must be lost
@@ -222,11 +234,22 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
         print("from: ("+str(from_x)+","+str(from_y)+")")
         print("  to: ("+str(to_x)+","+str(to_y)+")")
         print(cur_pos)
-        print("closed:")
-        print(closed_set)
-        print("open:")
-        print(open_heap)
-        return []
+        print("closed: len(", len(closed_set),"):",closed_set)
+        print("open_heap:len(", len(open_heap),"):", print_open_heap(open_heap))
+        pretty_print_map(create_text_map_from_cost_map(cost_map))
+        my_text_map = create_text_map_from_cost_map(cost_map)
+        open_heap_tuples = []
+        for pos in open_heap:
+          open_heap_tuples.append((pos[1]['x'],pos[1]['y']))
+        closed_list_tuples = []
+        for pos in closed_set:
+          closed_list_tuples.append(pos)
+        print_list_of_tuples_on_map(open_heap_tuples, '~',my_text_map)
+        print_list_of_tuples_on_map(closed_list_tuples, '.',my_text_map)
+        my_text_map[from_x][from_y] = 'A'
+        my_text_map[to_x][to_y] = 'B'
+        pretty_print_map(my_text_map)
+        # return return_dictionary
 
 
     #so then we have a path, write it back out to the path list
@@ -398,3 +421,9 @@ def unbreachable_wall(cost_map):
   for i in range(0,map_len-1):
     cost_map[i][15] = -1
     
+def print_open_heap(heap_in):
+  current_heap_positions = []
+  for i in heap_in:
+    current_heap_positions.append((i[1]['x'], i[1]['y'], i[1]['f']))
+  return str(current_heap_positions)
+

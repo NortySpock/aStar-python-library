@@ -1,15 +1,15 @@
 import path_util as path
 
-my_cost_map = path.make_grid(40,20,1) #default cost of 1
+my_cost_map = path.make_grid(5,5,1) #default cost of 1
 
-start_pos = [10,19]
-end_pos = [10,10]
+start_pos = [0,0]
+end_pos = [3,3]
 
 # start_pos = [10,0]
 # end_pos = [10,19]
 
 # my_cost_map[2][2] = -1
-quick_list = [(11,10,-1),(9,10,-1),(10,11,-1),(10,9,-1)]
+quick_list = [(4,3,-1),(3,4,-1),(2,3,-1),(3,2,-1)]
 path.apply_list_of_tuples_to_cost_map(quick_list,my_cost_map)
 # path.u_shaped_wall(my_cost_map)
 
