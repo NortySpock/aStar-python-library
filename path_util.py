@@ -169,18 +169,20 @@ def a_star_manhattan_path(from_x,from_y,to_x,to_y, cost_map):
   cost_map[to_x][to_y] = 1
 
   def _f(i):
-    return (_g(i) + _h(i, cost_map))
-
-  def _g(i):
-    return manhattan_distance(i[0], i[1], from_x, from_y)
-
-  def _h(i, cost_map):
+    _g = manhattan_distance(i[0], i[1], from_x, from_y)
+    
     tile_cost = cost_map[i[0]][i[1]]
     #calculate the cross product for two vectors -- one straight from start to goal and one from curr_pos position.
     #Slightly penalize deviation from "as the crow flies" to focus the search on empty maps.
     cross_prod = abs((i[0]-to_x)*(from_y-to_y) - (from_x-to_x)*(i[1]-to_y))
     divergence_factor = (cross_prod * (1.0/number_of_tiles_on_rectangular_map(cost_map)))
-    return ((manhattan_distance(i[0], i[1], to_x, to_y) + tile_cost + divergence_factor))
+    _h = (manhattan_distance(i[0], i[1], to_x, to_y) + tile_cost + divergence_factor)
+    return (_g + _h)
+
+
+  def _h(i, cost_map):
+    
+    return ()
 
   from_pos = {}
   from_pos['x'] = from_x
